@@ -11,7 +11,7 @@ entity asteroid_graph is
     );
 end asteroid_graph;
 
-architecture arch of asteroid_graph is
+architecture asteroid_arch of asteroid_graph is
     signal pix_x, pix_y : unsigned(9 downto 0);
     signal alien_rom_bit, spaceship_rom_bit, asteroid_rom_bit : std_logic;
 
@@ -119,4 +119,4 @@ architecture arch of asteroid_graph is
             graph_rgb <= "000"; -- black
         end if;
     end process;
-end arch;
+end asteroid_arch;
