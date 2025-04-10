@@ -82,6 +82,7 @@ architecture asteroid_arch of asteroid_graph is
         "0011111111111100" -- exhaust/flame ends
     );
     -- asteroid image
+    type rom_type_8 is array(0 to 8) of std_logic_vector(0 to 8);
     constant ASTEROID_ROM : rom_type_8 := (
         "00111100",
         "01111110",
