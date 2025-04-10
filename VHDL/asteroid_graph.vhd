@@ -5,8 +5,8 @@ use ieee.numeric_std.all;
 entity asteroid_graph is
     port (
         video_on : in std_logic;
-        pixel_x : in unsigned(9 downto 0);
-        pixel_y : in unsigned(9 downto 0);
+        pixel_x : in std_logic_vector(9 downto 0);
+        pixel_y : in std_logic_vector(9 downto 0);
         graph_rgb : out std_logic_vector(2 downto 0);
     );
 end asteroid_graph;
@@ -42,44 +42,60 @@ architecture asteroid_arch of asteroid_graph is
     signal alien_color, spaceship_color, asteroid_color : std_logic_vector(2 downto 0);
 
     -- alien image
-    type rom_type_12 is array(0 to 7) of std_logic_vector(0 to 11);
-    constant ALIEN_ROM : rom_type_12 := (
-        "000111111100",
-        "011000000011",
-        "101101101101",
-        "101000000101",
-        "101101101101",
-        "100110110001",
-        "011000000110",
-        "000111111000"
+    type rom_type_24 is array(0 to 23) of std_logic_vector(0 to 23);
+    constant ALIEN_ROM : rom_type_24 := (
+        "000000110000000011000000",
+        "000000001110011100000000",
+        "000000001110011100000000",
+        "011000111111111111000110",
+        "011000111111111111000110",
+        "011000111111111111000110",
+        "011000110001100011000110",
+        "011000110001100011000110",
+        "000111111111111111111000",
+        "000111111111111111111000",
+        "000111111111111111111000",
+        "000000111111111111000000",
+        "000000111111111111000000",
+        "000000001110011100000000",
+        "000000001110011100000000",
+        "000000001110011100000000"
     );
     -- spaceship image
-    type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
-    constant SPACESHIP_ROM : rom_type_8 := (
-        "00011000",
-        "00111100",
-        "01111110",
-        "11111111",
-        "11111111",
-        "00100100",
-        "01011010",
-        "10000001"
+    type rom_type_16 is array(0 to 16) of std_logic_vector(0 to 15);
+    constant SPACESHIP_ROM : rom_type_16 := (
+        "0000000100000000", -- tip
+        "0000001110000000",
+        "0000011111000000",
+        "0000111111110000",
+        "0011111111111100", -- body starts
+        "0011111111111100",
+        "0011111111111100",
+        "0011111111111100",
+        "0011111111111100",
+        "0011111111111100",
+        "0011111111111100",
+        "0011111111111100", -- body ends
+        "0111111111111110", -- exhaust/flame begins
+        "1111111111111111",
+        "0111111111111110",
+        "0011111111111100" -- exhaust/flame ends
     );
     -- asteroid image
     constant ASTEROID_ROM : rom_type_8 := (
-        "00011000",
         "00111100",
         "01111110",
         "11111111",
         "11111111",
-        "00100100",
-        "01011010",
-        "10000001"
+        "11111111",
+        "11111111",
+        "01111110",
+        "00111100"
     );
 
-    begin
-    pix_x <= to_unsigned(pixel_x);
-    pix_y <= to_unsigned(pixel_y);
+begin
+    pix_x <= unsigned(pixel_x);
+    pix_y <= unsigned(pixel_y);
 
     alien_rom_bit <= ALIEN_ROM(to_integer(pix_y) - ALIEN_Y_TOP)(to_integer(pix_x) - ALIEN_X_START);
 
@@ -87,16 +103,16 @@ architecture asteroid_arch of asteroid_graph is
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y) - ASTEROID_Y_TOP)(to_integer(pix_x) - ASTEROID_X_START);
 
-    alien_on <= '1' when (pixel_x >= ALIEN_X_START and pixel_x <= ALIEN_X_END) and
-        (pixel_y >= ALIEN_Y_TOP and pixel_y <= ALIEN_Y_BOTTOM) and (alien_rom_bit) else
+    alien_on <= '1' when (pix_x >= ALIEN_X_START and pix_x <= ALIEN_X_END) and
+        (pix_y >= ALIEN_Y_TOP and pix_y <= ALIEN_Y_BOTTOM) and (alien_rom_bit = '1') else
         '0';
 
-    spaceship_on <= '1' when (pixel_x >= SPACESHIP_X_START and pixel_x <= SPACESHIP_X_END) and
-        (pixel_y >= SPACESHIP_Y_TOP and pixel_y <= SPACESHIP_Y_BOTTOM) and (spaceship_rom_bit) else
+    spaceship_on <= '1' when (pix_x >= SPACESHIP_X_START and pix_x <= SPACESHIP_X_END) and
+        (pix_y >= SPACESHIP_Y_TOP and pix_y <= SPACESHIP_Y_BOTTOM) and (spaceship_rom_bit = '1') else
         '0';
 
-    asteroid_on <= '1' when (pixel_x >= ASTEROID_X_START and pixel_x <= ASTEROID_X_END) and
-        (pixel_y >= ASTEROID_Y_TOP and pixel_y <= ASTEROID_Y_BOTTOM) and (asteroid_rom_bit) else
+    asteroid_on <= '1' when (pix_x >= ASTEROID_X_START and pix_x <= ASTEROID_X_END) and
+        (pix_y >= ASTEROID_Y_TOP and pix_y <= ASTEROID_Y_BOTTOM) and (asteroid_rom_bit = '1') else
         '0';
 
     alien_color <= "001";
