@@ -25,6 +25,9 @@ architecture asteroid_arch of asteroid_graph is
     constant SPACESHIP_Y_SIZE : integer := 24;
     constant ASTEROID_SIZE : integer := 8;
 
+    constant ASTEROID_DY : integer := 1;
+    constant ALIEN_DX : integer := 1;
+
     signal pix_x, pix_y : unsigned(9 downto 0);
     signal alien_rom_bit, spaceship_rom_bit, asteroid_rom_bit : std_logic;
 
@@ -147,34 +150,31 @@ begin
     refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
         pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
         '0';
-    -- at reset, set the initial positions of the objects
-    process (clk, reset)
+
+
+    -- move the alien
+    process (alien_x_start)
     begin
-        if reset = '1' then
-            alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
-            alien_y_top <= to_unsigned(10, 10);
+        if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_SIZE, 10) then
+            alien_x_start_next <= alien_x_start + ALIEN_DX;
+        else
+            alien_x_start_next <= to_unsigned(0, 10);
+        end if;
 
-            spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
-            spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
-
-            asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
-            asteroid_y_top <= to_unsigned(SCREEN_HEIGHT / 2 - ASTEROID_SIZE / 2, 10);
-        elsif rising_edge(clk) then
-            if refresh_screen = '1' then
-                alien_x_start <= alien_x_start_next;
-                alien_y_top <= alien_y_top_next;
-
-                spaceship_x_start <= spaceship_x_start_next;
-                spaceship_y_top <= spaceship_y_top_next;
-
-                asteroid_x_start <= asteroid_x_start_next;
-                asteroid_y_top <= asteroid_y_top_next;
-            end if;
+    end process;
+    
+    -- move the asteroid
+    process (asteroid_y_top)
+    begin
+        if asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE, 10) then
+            asteroid_y_top_next <= asteroid_y_top + ASTEROID_DY;
+        else
+            asteroid_y_top_next <= to_unsigned(0, 10);
         end if;
     end process;
 
     -- update the spaceship position based on button presses
-    process (btnl, btnr, btnu, btnd)
+    process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top)
         spaceship_x_start_next <= spaceship_x_start;
         spaceship_y_top_next <= spaceship_y_top;
     begin
@@ -187,6 +187,32 @@ begin
             spaceship_y_top_next <= spaceship_y_top - 1;
         elsif (btnd = '1') and (spaceship_y_bottom < SCREEN_HEIGHT - 1) then
             spaceship_y_top_next <= spaceship_y_top + 1;
+        end if;
+    end process;
+
+    -- at reset, set the initial positions of the objects
+    process (clk, reset)
+    begin
+        if reset = '1' then
+            alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
+            alien_y_top <= to_unsigned(10, 10);
+
+            spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
+            spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
+
+            asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
+            asteroid_y_top <= 0;
+        elsif rising_edge(clk) then
+            if refresh_screen = '1' then
+                alien_x_start <= alien_x_start_next;
+                alien_y_top <= alien_y_top_next;
+
+                spaceship_x_start <= spaceship_x_start_next;
+                spaceship_y_top <= spaceship_y_top_next;
+
+                asteroid_x_start <= asteroid_x_start_next;
+                asteroid_y_top <= asteroid_y_top_next;
+            end if;
         end if;
     end process;
 
