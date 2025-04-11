@@ -13,7 +13,7 @@ entity alien_1_graph is
         refresh_screen : in std_logic;
         -- collision : in std_logic;
         active : in std_logic;
-        alien_on : out std_logic;
+        alien_on : out std_logic
     );
 end entity alien_1_graph;
 
