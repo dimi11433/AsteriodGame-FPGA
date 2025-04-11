@@ -119,7 +119,7 @@ begin
     begin
         if reset = '1' then
             asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
-            asteroid_y_top <= unsigned(0, 10);
+            asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 asteroid_x_start <= asteroid_x_start_next;
