@@ -65,7 +65,7 @@ begin
 
     spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y) - to_integer(spaceship_y_top))(to_integer(pixel_x) - to_integer(spaceship_x_start));
 
-    spaceship_on <= '1' when (pix_x >= spaceship_x_start and pix_x <= spaceship_x_end) and
+    spaceship_on <= '1' when (pixel_x >= spaceship_x_start and pixel_x <= spaceship_x_end) and
         (pixel_y >= spaceship_y_top and pixel_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else
         '0';
 

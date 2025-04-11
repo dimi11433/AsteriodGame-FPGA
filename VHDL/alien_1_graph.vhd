@@ -56,8 +56,8 @@ architecture behavior of alien_1_graph is
 begin
     alien_rom_bit <= ALIEN_ROM(to_integer(pixel_y) - to_integer(alien_y_top))(to_integer(pixel_x) - to_integer(alien_x_start));
 
-    alien_on <= '1' when (pix_x >= alien_x_start and pix_x <= alien_x_end) and
-        (pix_y >= alien_y_top and pix_y <= alien_y_bottom) and (alien_rom_bit = '1') and (active = '1') else
+    alien_on <= '1' when (pixel_x >= alien_x_start and pixel_x <= alien_x_end) and
+        (pixel_y >= alien_y_top and pixel_y <= alien_y_bottom) and (alien_rom_bit = '1') and (active = '1') else
         '0';
 
     -- Set the right and bottom for all the objects
