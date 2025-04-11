@@ -31,7 +31,9 @@ begin
     -- instantiate pixel generation circuit
     asteroids_graph_unit : entity work.asteroid_graph(asteroid_arch)
         port map(
+            clk => clk,
             reset => reset,
+            pixel_tick => pixel_tick,
             video_on => video_on,
             pixel_x => pixel_x,
             pixel_y => pixel_y,
