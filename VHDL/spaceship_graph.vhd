@@ -71,9 +71,9 @@ begin
 
     -- update the spaceship position based on button presses
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top)
+    begin
         spaceship_x_start_next <= spaceship_x_start;
         spaceship_y_top_next <= spaceship_y_top;
-    begin
         if (btnl = '1') and (spaceship_x_start > 0) then
             spaceship_x_start_next <= spaceship_x_start - 1;
         elsif (btnr = '1') and (spaceship_x_end < SCREEN_WIDTH - 1) then
