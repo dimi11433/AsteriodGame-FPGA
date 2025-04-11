@@ -12,7 +12,7 @@ entity spaceship_graph is
         btnc : in std_logic;
         refresh_screen : in std_logic;
         -- collision : in std_logic;
-        spaceship_on : out std_logic;
+        spaceship_on : out std_logic
     );
 end spaceship_graph;
 
@@ -66,7 +66,7 @@ begin
     spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y) - to_integer(spaceship_y_top))(to_integer(pixel_x) - to_integer(spaceship_x_start));
 
     spaceship_on <= '1' when (pix_x >= spaceship_x_start and pix_x <= spaceship_x_end) and
-        (pix_y >= spaceship_y_top and pix_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else
+        (pixel_y >= spaceship_y_top and pixel_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else
         '0';
 
     -- update the spaceship position based on button presses
