@@ -70,7 +70,7 @@ begin
         '0';
 
     -- update the spaceship position based on button presses
-    process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top)
+    process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
     begin
         spaceship_x_start_next <= spaceship_x_start;
         spaceship_y_top_next <= spaceship_y_top;
