@@ -33,9 +33,9 @@ architecture asteroid_arch of asteroid_graph is
     -- next start positions for the objects
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0);
 
-    signal asteroid_on, alien_1_on, spaceship_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on, info_section_on : std_logic;
 
-    signal alien_color, spaceship_color, asteroid_color : std_logic_vector(2 downto 0);
+    signal alien_color, spaceship_color, asteroid_color, info_section_color : std_logic_vector(2 downto 0);
 
     signal refresh_screen : std_logic;
 
@@ -88,12 +88,25 @@ begin
             collision => collision_with_alien
         );
 
+    -- instantiate the info section graph
+    info_section_graph_unit : entity work.info_section_graph
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_x => pix_x,
+            pixel_y => pix_y,
+            refresh_screen => refresh_screen,
+            collision => collision_with_asteroid or collision_with_alien,
+            info_section_on => info_section_on
+        );
+
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
     alien_color <= "110"; -- purple
     spaceship_color <= "010"; -- green
     asteroid_color <= "111"; -- white/greyish
+    info_section_color <= "111"; -- black
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y) - to_integer(asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_x_start));
 
@@ -141,7 +154,9 @@ begin
     process (video_on, alien_1_on, spaceship_on, asteroid_on)
     begin
         if video_on = '1' then
-            if alien_1_on = '1' then
+            if info_section_on = '1' then
+                graph_rgb <= info_section_color;
+            elsif alien_1_on = '1' then
                 graph_rgb <= alien_color;
             elsif spaceship_on = '1' then
                 graph_rgb <= spaceship_color;
