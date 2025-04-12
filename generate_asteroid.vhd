@@ -158,9 +158,13 @@ begin
 
     asteroid_rom_bit(3) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(3).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(3).asteroid_x_start));
 
-    asteroid_on <= '1' when (pix_x >= asteroid_x_start and pix_x <= asteroid_x_end) and
-        (pix_y >= asteroid_y_top and pix_y <= asteroid_y_bottom) and (asteroid_rom_bit = '1') else
+    asteroid_on(0) <= '1' when (pix_x >= asteroid_id_arry(0).asteroid_x_start and pix_x <= asteroid_id_arry(0).asteroid_x_end) and
+        (pix_y >= asteroid_id_arry(0).asteroid_y_top and pix_y <= asteroid_id_arry(0).asteroid_y_bottom) and (asteroid_rom_bit(0) = '1') else
         '0';
+    asteroid_on(0) <= '1' when (pix_x >= asteroid_id_arry(0).asteroid_x_start and pix_x <= asteroid_id_arry(0).asteroid_x_end) and
+        (pix_y >= asteroid_id_arry(0).asteroid_y_top and pix_y <= asteroid_id_arry(0).asteroid_y_bottom) and (asteroid_rom_bit(0) = '1') else
+        '0';
+
 
 
 
