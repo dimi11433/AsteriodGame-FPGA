@@ -21,7 +21,8 @@ architecture behavior of alien_1_graph is
     constant SCREEN_WIDTH : integer := 640;
     constant SCREEN_HEIGHT : integer := 480;
 
-    constant ALIEN_SIZE : integer := 24;
+    constant ALIEN_X_SIZE : integer := 24;
+    constant ALIEN_Y_SIZE : integer := 16;
 
     constant ALIEN_DX : integer := 1;
 
@@ -63,13 +64,13 @@ begin
         '0';
 
     -- Set the right and bottom for all the objects
-    alien_x_end <= alien_x_start + ALIEN_SIZE - 1;
-    alien_y_bottom <= alien_y_top + ALIEN_SIZE - 1;
+    alien_x_end <= alien_x_start + ALIEN_X_SIZE - 1;
+    alien_y_bottom <= alien_y_top + ALIEN_Y_SIZE - 1;
 
     -- move the alien
     process (alien_x_start)
     begin
-        if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_SIZE, 10) then
+        if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10) then
             alien_x_start_next <= alien_x_start + ALIEN_DX;
         else
             alien_x_start_next <= to_unsigned(0, 10);
@@ -81,13 +82,13 @@ begin
     process (clk, reset)
     begin
         if (reset = '1') then
-            alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
+            alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_X_SIZE / 2, 10);
             alien_y_top <= to_unsigned(10, 10);
             collision_happened <= '0';
         elsif (rising_edge(clk)) then
             if (refresh_screen = '1') then
                 if (collision_happened = '1') then
-                    alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
+                    alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_X_SIZE / 2, 10);
                     collision_happened <= '0';
                 else
                     alien_x_start <= alien_x_start_next;
