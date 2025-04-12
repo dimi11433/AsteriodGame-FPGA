@@ -145,7 +145,6 @@ begin
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
-                asteroid_x_start <= asteroid_x_start_next;
                 asteroid_y_top <= asteroid_y_top_next;
             end if;
         end if;

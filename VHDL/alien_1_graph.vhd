@@ -84,7 +84,6 @@ begin
         elsif (rising_edge(clk)) then
             if (refresh_screen = '1') then
                 alien_x_start <= alien_x_start_next;
-                alien_y_top <= alien_y_top_next;
             end if;
         end if;
     end process;
