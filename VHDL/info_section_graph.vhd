@@ -19,8 +19,8 @@ architecture behavioral of info_section_graph is
 
     constant INFO_SECTION_BOTTOM : integer := 42;
     constant INFO_SECTION_TOP : integer := 40;
-    constant INFO_SECTION_RIGHT : integer := 62;
-    constant INFO_SECTION_LEFT : integer := 60;
+    constant INFO_SECTION_RIGHT : integer := 102;
+    constant INFO_SECTION_LEFT : integer := 100;
 
     signal left_bar_on, bottom_bar_on : std_logic;
 
