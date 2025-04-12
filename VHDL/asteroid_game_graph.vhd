@@ -150,7 +150,7 @@ begin
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 if collision_with_asteroid_happened = '1' then
-                    asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
+                    asteroid_y_top <= to_unsigned(0, 10);
                     collision_with_asteroid_happened <= '0';
                 else
                     asteroid_y_top <= asteroid_y_top_next;
