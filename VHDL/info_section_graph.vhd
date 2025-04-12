@@ -26,11 +26,11 @@ architecture behavioral of info_section_graph is
 
 begin
     left_bar_on <= '1' when (pixel_x >= INFO_SECTION_LEFT and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= (others => '0') and pixel_y <= INFO_SECTION_BOTTOM) else
+         (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';
 
-    bottom_bar_on <= '1' when (pixel_x >= (others => '0') and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= INFO_SECTION_BOTTOM and pixel_y <= INFO_SECTION_TOP) else
+    bottom_bar_on <= '1' when (pixel_x >= to_unsigned(0, 10) and pixel_x <= INFO_SECTION_RIGHT) and
+         (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';
 
     info_section_on <= bottom_bar_on or left_bar_on;

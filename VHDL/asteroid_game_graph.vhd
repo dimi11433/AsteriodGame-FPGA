@@ -127,6 +127,8 @@ begin
     collision_with_alien <= '1' when (alien_1_on = '1' and spaceship_on = '1') else
         '0';
 
+    alien_1_active <= '1'; 
+
     -- move the asteroid
     process (asteroid_y_top)
     begin
