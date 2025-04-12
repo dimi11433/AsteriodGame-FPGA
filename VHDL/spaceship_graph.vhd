@@ -11,7 +11,7 @@ entity spaceship_graph is
         btnu, btnd : in std_logic;
         btnc : in std_logic;
         refresh_screen : in std_logic;
-        -- collision : in std_logic;
+        collision : in std_logic;
         spaceship_on : out std_logic
     );
 end spaceship_graph;
@@ -94,8 +94,13 @@ begin
             spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
         elsif (rising_edge(clk)) then
             if (refresh_screen = '1') then
-                spaceship_x_start <= spaceship_x_start_next;
-                spaceship_y_top <= spaceship_y_top_next;
+                if (collision = '1') then
+                    spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
+                    spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
+                else
+                    spaceship_x_start <= spaceship_x_start_next;
+                    spaceship_y_top <= spaceship_y_top_next;
+                end if;
             end if;
         end if;
     end process;

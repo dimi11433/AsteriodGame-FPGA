@@ -11,7 +11,7 @@ entity alien_1_graph is
         -- btnu, btnd : in std_logic;
         -- btnc : in std_logic;
         refresh_screen : in std_logic;
-        -- collision : in std_logic;
+        collision : in std_logic;
         active : in std_logic;
         alien_on : out std_logic
     );

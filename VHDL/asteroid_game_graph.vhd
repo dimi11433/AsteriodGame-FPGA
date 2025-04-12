@@ -41,6 +41,8 @@ architecture asteroid_arch of asteroid_graph is
 
     signal alien_1_active, alien_2_active : std_logic;
 
+    signal collision_with_asteroid, collision_with_alien : std_logic;
+
     -- asteroid image
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
     constant ASTEROID_ROM : rom_type_8 := (
@@ -69,7 +71,8 @@ begin
             btnd => btnd,
             btnc => btnc,
             refresh_screen => refresh_screen,
-            spaceship_on => spaceship_on
+            spaceship_on => spaceship_on,
+            collision => collision_with_asteroid or collision_with_alien
         );
     
     -- instantiate the alien graph
@@ -81,7 +84,8 @@ begin
             pixel_y => pix_y,
             refresh_screen => refresh_screen,
             active => alien_1_active,
-            alien_on => alien_1_on
+            alien_on => alien_1_on,
+            collision => collision_with_alien
         );
 
     pix_x <= unsigned(pixel_x);
@@ -102,6 +106,12 @@ begin
 
     refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
         pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
+        '0';
+
+    collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on = '1') else
+        '0';
+
+    collision_with_alien <= '1' when (alien_1_on = '1' and spaceship_on = '1') else
         '0';
 
     -- move the asteroid
