@@ -32,6 +32,8 @@ architecture behavior of alien_1_graph is
 
     signal alien_x_start_next, alien_y_top_next : unsigned(9 downto 0);
 
+    signal collision_happened : std_logic;
+
     -- alien image
     type rom_type_16 is array(0 to 15) of std_logic_vector(0 to 23);
     constant ALIEN_ROM : rom_type_16 := (
@@ -81,9 +83,19 @@ begin
         if (reset = '1') then
             alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
             alien_y_top <= to_unsigned(10, 10);
+            collision_happened <= '0';
         elsif (rising_edge(clk)) then
             if (refresh_screen = '1') then
-                alien_x_start <= alien_x_start_next;
+                if (collision_happened = '1') then
+                    alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_SIZE / 2, 10);
+                    collision_happened <= '0';
+                else
+                    alien_x_start <= alien_x_start_next;
+                end if;
+            end if;
+
+            if (collision = '1') then
+                collision_happened <= '1';
             end if;
         end if;
     end process;

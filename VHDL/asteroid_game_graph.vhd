@@ -43,6 +43,8 @@ architecture asteroid_arch of asteroid_graph is
 
     signal collision_with_asteroid, collision_with_alien : std_logic;
 
+    signal collision_with_asteroid_happened : std_logic;
+
     -- asteroid image
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
     constant ASTEROID_ROM : rom_type_8 := (
@@ -147,7 +149,16 @@ begin
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
-                asteroid_y_top <= asteroid_y_top_next;
+                if collision_with_asteroid_happened = '1' then
+                    asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
+                    collision_with_asteroid_happened <= '0';
+                else
+                    asteroid_y_top <= asteroid_y_top_next;
+                end if;
+            end if;
+
+            if collision_with_asteroid = '1' then
+                collision_with_asteroid_happened <= '1';
             end if;
         end if;
     end process;
