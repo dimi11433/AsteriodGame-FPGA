@@ -143,7 +143,25 @@ architecture asteroids of asteroid_gen is
         "00000011111111000000",  
         "00000001111110000000"
     );
-begin 
+begin
+    pix_x <= unsigned(pixel_x);
+    pix_y <= unsigned(pixel_y);
+
+    asteroid_color <= "111"; -- white/greyish 
+
+    --Is the bit we are at the same bit in any of the asteroids.
+    asteroid_rom_bit(0) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(0).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(0).asteroid_x_start));
+
+    asteroid_rom_bit(1) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(1).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(1).asteroid_x_start));
+
+    asteroid_rom_bit(2) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(2).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(2).asteroid_x_start));
+
+    asteroid_rom_bit(3) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(3).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(3).asteroid_x_start));
+
+    asteroid_on <= '1' when (pix_x >= asteroid_x_start and pix_x <= asteroid_x_end) and
+        (pix_y >= asteroid_y_top and pix_y <= asteroid_y_bottom) and (asteroid_rom_bit = '1') else
+        '0';
+
 
 
 
