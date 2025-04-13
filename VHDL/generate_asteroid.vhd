@@ -19,13 +19,13 @@ architecture asteroids of asteroid_gen is
     constant SCREEN_WIDTH : integer := 640;
     constant SCREEN_HEIGHT : integer := 480;
 
-    constant ASTEROID_SIZE_2 : integer := 10;
-    constant ASTEROID_SIZE_3 : integer := 15;
-    constant ASTEROID_SIZE_4 : integer := 20;
-    constant ASTEROID_SIZE_5 : integer := 25;
+
+    constant ASTEROID_SIZE : array(0 to 3) of integer := (10, 15, 20, 25);
 
     constant ASTEROID_DY : integer := 1;
     constant ASTEROID_DX : integer := 1;
+
+    
 
     signal pix_x, pix_y : unsigned(9 downto 0);
 
@@ -57,6 +57,7 @@ architecture asteroids of asteroid_gen is
     signal collision_with_asteroid, collision_with_alien : std_logic;
 
     signal collision_with_asteroid_happened : std_logic;
+    signal i : std_logic;
 
     --asteroid image
     type rom_type_10 is array(0 downto 9) of std_logic_vector(0 downto 9);
@@ -150,20 +151,45 @@ begin
     asteroid_color <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
-    asteroid_rom_bit(0) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(0).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(0).asteroid_x_start));
+    process(pix_y, pix_x)
+    begin 
+        for i in 0 to 3 loop 
+            asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
 
-    asteroid_rom_bit(1) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(1).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(1).asteroid_x_start));
+        end loop;
+    end process;
 
-    asteroid_rom_bit(2) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(2).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(2).asteroid_x_start));
+    process(pix_x, pix_y)
+    begin
+        for i in 0 to 3 loop
+            asteroid_on(i) <= '1' when (pix_x >= asteroid_id_arry(i).asteroid_x_start and pix_x <= asteroid_id_arry(i).asteroid_x_end) and
+            (pix_y >= asteroid_id_arry(i).asteroid_y_top and pix_y <= asteroid_id_arry(i).asteroid_y_bottom) and (asteroid_rom_bit(i) = '1') else
+            '0';
+        end loop;
+    end process;
 
-    asteroid_rom_bit(3) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(3).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(3).asteroid_x_start));
+    process(pix_x, pix_y)
+    begin
+        for i in 0 to 3 loop
+            asteroid_id_arry(i).asteroid_x_end <= asteroid_id_arry(i).asteroid_x_start + ASTEROID_SIZE(i) - 1;
+            asteroid_id_arry(i).asteroid_y_bottom <= asteroid_id_arry(i).asteroid_y_top + ASTEROID_SIZE(i) - 1; 
+        end loop;
+    end process; 
 
-    asteroid_on(0) <= '1' when (pix_x >= asteroid_id_arry(0).asteroid_x_start and pix_x <= asteroid_id_arry(0).asteroid_x_end) and
-        (pix_y >= asteroid_id_arry(0).asteroid_y_top and pix_y <= asteroid_id_arry(0).asteroid_y_bottom) and (asteroid_rom_bit(0) = '1') else
+    refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
+        pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
         '0';
-    asteroid_on(0) <= '1' when (pix_x >= asteroid_id_arry(0).asteroid_x_start and pix_x <= asteroid_id_arry(0).asteroid_x_end) and
-        (pix_y >= asteroid_id_arry(0).asteroid_y_top and pix_y <= asteroid_id_arry(0).asteroid_y_bottom) and (asteroid_rom_bit(0) = '1') else
-        '0';
+    process(spaceship_on, asteroid_on)
+    begin
+        for i in 0 to 3 loop
+            collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on(i) = '1') else
+            '0';
+            if (collision_with_asteroid == '1')then
+                exit;
+            end if;
+        end loop;
+    end process;
+
 
 
 
