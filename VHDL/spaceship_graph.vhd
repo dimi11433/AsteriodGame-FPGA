@@ -104,16 +104,37 @@ begin
             );
     end generate;
 
-    -- map collisions
-    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
-        info_of_missiles(i).collision <= collision_happened_missiles(i);
-    end generate;
+    process (clk)
+    begin
+        if (reset = '1') then
+            -- map collisions
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+                info_of_missiles(i).collision <= '0';
+            end generate;
+        elsif (rising_edge(clk)) then
+            -- map collisions
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+                info_of_missiles(i).collision <= collision_happened_missiles(i);
+            end generate;
+        end if;
 
-    -- calculate collision happened
-    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
-        collision_happened_missiles(i) <= '1' when (info_of_missiles(i).missile_active = '1') and ((info_of_missiles(i).missile_on = '1') and ((asteroid_on = '1') or (alien_on = '1'))) else
-        '0';
-    end generate;
+    end process;
+    process (clk)
+    begin
+        if (reset = '1') then
+            -- calculate collision happened
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+                collision_happened_missiles(i) <= '0';
+            end generate;
+        elsif (rising_edge(clk)) then
+            -- calculate collision happened
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+                collision_happened_missiles(i) <= '1' when (info_of_missiles(i).missile_active = '1') and ((info_of_missiles(i).missile_on = '1') and ((asteroid_on = '1') or (alien_on = '1'))) else
+                '0';
+            end generate;
+        end if;
+
+    end process;
 
     spaceship_x_end <= spaceship_x_start + SPACESHIP_X_SIZE - 1;
     spaceship_y_bottom <= spaceship_y_top + SPACESHIP_Y_SIZE - 1;
