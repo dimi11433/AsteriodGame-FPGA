@@ -61,7 +61,7 @@ begin
             missile_y_top <= to_unsigned(0, 10);
         elsif rising_edge(clk) then
             if refresh_screen = '1' and missile_active = '1' then
-                if missile_y_top == to_unsigned(0, 10) then
+                if missile_y_top = to_unsigned(0, 10) then
                     missile_active <= '0';
                 else
                     missile_y_top <= missile_y_top_next;
