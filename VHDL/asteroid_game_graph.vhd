@@ -79,6 +79,7 @@ begin
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             asteroid_on => asteroid_on,
+            alien_on => alien_1_on,
             missile_on => missile_on
         );
     
