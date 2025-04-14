@@ -9,13 +9,4 @@ package Types is
         char_x_start : unsigned(9 downto 0);
         char_y_top : unsigned(9 downto 0);
     end record;
-
-    type missile_prop is record
-        missile_x_start : unsigned(9 downto 0);
-        missile_y_top : unsigned(9 downto 0);
-        missile_active : std_logic;
-        missile_launch : std_logic;
-        collision : std_logic;
-        missile_on : std_logic;
-    end record;
 end package Types;

@@ -14,7 +14,8 @@ entity spaceship_graph is
         refresh_screen : in std_logic;
         collision : in std_logic;
         number_of_lives : inout unsigned(1 downto 0);
-        spaceship_on : out std_logic
+        spaceship_on : out std_logic;
+        missile_on : out std_logic;
     );
 end spaceship_graph;
 
@@ -68,6 +69,15 @@ architecture spaceship_arch of spaceship_graph is
         "001000000000100"
     );
 
+    type missile_prop is record
+        missile_x_start : unsigned(9 downto 0);
+        missile_y_top : unsigned(9 downto 0);
+        missile_active : std_logic;
+        missile_launch : std_logic;
+        collision : std_logic;
+        missile_on : std_logic;
+    end record;
+
     type missiles_infos is array(0 to MAX_NUMBER_OF_MISSILES - 1) of missile_prop;
     signal info_of_missiles : missiles_infos;
 
@@ -85,7 +95,12 @@ begin
                 pixel_x => pixel_x,
                 pixel_y => pixel_y,
                 refresh_screen => refresh_screen,
-                missile_info => info_of_missiles(i)
+                missile_start_x => info_of_missiles(i).missile_x_start,
+                missile_start_y => info_of_missiles(i).missile_y_top,
+                missile_active => info_of_missiles(i).missile_active,
+                missile_launch => info_of_missiles(i).missile_launch,
+                collision => collision_happened_missiles(i),
+                missile_on => info_of_missiles(i).missile_on
             );
     end generate;
 
@@ -111,6 +126,23 @@ begin
 
     number_of_lives_next <= number_of_lives - 1 when (collision_happened = '1') else
         number_of_lives;
+
+    process (clk, reset)
+    begin
+        missile_on <= '0';
+        if (reset = '1') then
+            missile_on <= '0';
+        elsif (rising_edge(clk)) then
+            if (refresh_screen = '1') then
+                for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+                    if (info_of_missiles(i).missile_on = '1') then
+                        missile_on <= '1';
+                    end if;
+                end loop;
+            end if;
+        end if;
+
+    end process;
 
     -- update the spaceship position based on button presses
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
