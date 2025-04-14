@@ -54,10 +54,12 @@ architecture asteroids of asteroid_gen is
 
     signal refresh_screen : std_logic;
 
-    signal collision_with_asteroid, collision_with_alien : std_logic;
+    signal collision_with_asteroid : std_logic;
 
     signal collision_with_asteroid_happened : std_logic;
     signal i : std_logic;
+
+    
 
     --asteroid image
     type rom_type_10 is array(0 downto 9) of std_logic_vector(0 downto 9);
@@ -182,12 +184,54 @@ begin
     process(spaceship_on, asteroid_on)
     begin
         for i in 0 to 3 loop
-            collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on(i) = '1') else
-            '0';
-            if (collision_with_asteroid == '1')then
-                exit;
+            if(spaceship_on = '1' and asteroid_on(i) = '1')then
+                collision_with_asteroid <= '1';
             end if;
         end loop;
+    end process;
+
+    --move the asteroids vertical position
+    process (asteroid_id_arry(0).asteroid_y_top,asteroid_id_arry(1).asteroid_y_top, asteroid_id_arry(2).asteroid_y_top, asteroid_id_arry(3).asteroid_y_top)
+    begin
+        for i in 0 to 3 loop
+            if asteroid_id_arry(i).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE, 10) then
+                asteroid_mov_arry(i).asteroid_y_yop_next <= asteroid_id_arry(i).asteroid_y_top + ASTEROID_DY;
+            else
+                asteroid_mov_arry(i).asteroid_y_yop_next <= to_unsigned(0, 10);
+            end if;    
+        end loop;
+    end process;
+    --Lets come back to the Dx movements
+    -- process(asteroid_on)
+    -- begin
+    --     for i in 0 to 3 loop
+    --         if asteroid_on(0) = '1' and asteroid_on(1) = '1' 
+    -- at reset, set the initial positions of the objects
+    process (clk, reset)
+    begin
+        if reset = '1' then
+            for i in 0 to 3 loop
+                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
+                asteroid_id_arry(i).asteroid_y_top <= (others => '0');
+                number_of_lives <= "11"; -- 3 lives
+            end loop;
+        elsif rising_edge(clk) then
+            if refresh_screen = '1' then
+                for i in 0 to 3 loop
+                    if collision_with_asteroid_happened = '1' then
+                        asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10);
+                        collision_with_asteroid_happened <= '0';
+                    else
+                        asteroid_id_arry(i).asteroid_y_top <= asteroid_mov_arry(i).asteroid_y_top_next;
+                    end if;
+                    
+                end loop;
+            end if;
+
+            if collision_with_asteroid = '1' then
+                collision_with_asteroid_happened <= '1';
+            end if;
+        end if;
     end process;
 
 
