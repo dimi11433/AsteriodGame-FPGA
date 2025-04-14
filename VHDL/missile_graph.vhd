@@ -42,7 +42,7 @@ begin
     missile_x_end <= missile_x_start + to_unsigned(MISSILE_SIZE, 10);
     missile_y_bottom <= missile_y_top + to_unsigned(MISSILE_SIZE, 10);
 
-    missile_on <= '1' when (pixel_x >= missile_x_start and pixel_x <= missile_x_end) and
+    missile_info.missile_on <= '1' when (pixel_x >= missile_x_start and pixel_x <= missile_x_end) and
         (pixel_y >= missile_y_top and pixel_y <= missile_y_bottom) and (missile_rom_bit = '1') and (missile_info.missile_active = '1') else
         '0';
 
