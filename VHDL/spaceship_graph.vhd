@@ -99,7 +99,7 @@ begin
                 missile_start_y => info_of_missiles(i).missile_y_top,
                 missile_active => info_of_missiles(i).missile_active,
                 missile_launch => info_of_missiles(i).missile_launch,
-                collision => collision_happened_missiles(i),
+                collision => info_of_missiles(i).collision,
                 missile_on => info_of_missiles(i).missile_on
             );
     end generate;
