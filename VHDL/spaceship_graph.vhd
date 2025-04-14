@@ -56,7 +56,7 @@ architecture spaceship_arch of spaceship_graph is
         "000111111111000",
         "000111111111000",
         "000111111111000",
-        "001111111111110",
+        "001111111111100",
         "011111111111110",
         "011111111111110",
         "011111111111110",
@@ -64,7 +64,7 @@ architecture spaceship_arch of spaceship_graph is
         "011111111111110",
         "001110000001100",
         "001100000001100",
-        "000000000000000"
+        "001000000000100"
     );
 
     type missiles_infos is array(0 to MAX_NUMBER_OF_MISSILES - 1) of missile_prop;
@@ -91,6 +91,7 @@ begin
     for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
         info_of_missiles(i).collision <= collision_happened_missiles(i);
     end generate;
+
     -- calculate collision happened
     for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
         collision_happened_missiles(i) <= '1' when (info_of_missiles(i).missile_active = '1') and ((info_of_missiles(i).missile_on = '1') and ((asteroid_on = '1') or (alien_on = '1'))) else
