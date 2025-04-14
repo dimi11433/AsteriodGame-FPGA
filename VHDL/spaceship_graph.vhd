@@ -108,14 +108,14 @@ begin
     begin
         if (reset = '1') then
             -- map collisions
-            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                 info_of_missiles(i).collision <= '0';
-            end generate;
+            end loop;
         elsif (rising_edge(clk)) then
             -- map collisions
-            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                 info_of_missiles(i).collision <= collision_happened_missiles(i);
-            end generate;
+            end loop;
         end if;
 
     end process;
@@ -123,15 +123,15 @@ begin
     begin
         if (reset = '1') then
             -- calculate collision happened
-            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                 collision_happened_missiles(i) <= '0';
-            end generate;
+            end loop;
         elsif (rising_edge(clk)) then
             -- calculate collision happened
-            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                 collision_happened_missiles(i) <= '1' when (info_of_missiles(i).missile_active = '1') and ((info_of_missiles(i).missile_on = '1') and ((asteroid_on = '1') or (alien_on = '1'))) else
                 '0';
-            end generate;
+            end loop;
         end if;
 
     end process;
