@@ -87,7 +87,7 @@ architecture spaceship_arch of spaceship_graph is
 begin
 
     -- generate the missiles
-    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+    gen_missiles : for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
         missile_graph_unit : entity work.missile_graph
             port map(
                 clk => clk,
