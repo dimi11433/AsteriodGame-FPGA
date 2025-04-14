@@ -73,6 +73,7 @@ architecture spaceship_arch of spaceship_graph is
 
     type collisions is array(0 to MAX_NUMBER_OF_MISSILES - 1) of std_logic;
     signal collision_happened_missiles : collisions;
+    signal i : integer;
 begin
 
     -- generate the missiles

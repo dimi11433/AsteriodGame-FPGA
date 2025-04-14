@@ -1,7 +1,6 @@
 -- Package Declaration
 package Types is
     type char_bitmap is array (0 to 7) of std_logic_vector(7 downto 0);
-    type missile_rom is array (0 to 3) of std_logic_vector(3 downto 0);
 
     type character_display_prop is record
         char_data : char_bitmap;
