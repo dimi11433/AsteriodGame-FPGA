@@ -22,6 +22,7 @@ architecture missile_arch of missile_graph is
 
     constant MISSILE_DY : integer := 1;
 
+    type missile_rom is array (0 to 3) of std_logic_vector(3 downto 0);
     constant MISSILE_BITMAP : missile_rom := (
          "0110",  -- Row 0
          "1111",  -- Row 1
@@ -41,7 +42,7 @@ begin
     missile_x_end <= missile_x_start + to_unsigned(MISSILE_SIZE, 10);
     missile_y_bottom <= missile_y_top + to_unsigned(MISSILE_SIZE, 10);
 
-    missile_on <= '1' when (pixel_x >= missile_x_start and pixel_x <= missile_x_end) and
+    missile_info.missile_on <= '1' when (pixel_x >= missile_x_start and pixel_x <= missile_x_end) and
         (pixel_y >= missile_y_top and pixel_y <= missile_y_bottom) and (missile_rom_bit = '1') and (missile_info.missile_active = '1') else
         '0';
 
@@ -54,7 +55,7 @@ begin
             missile_x_start <= to_unsigned(0, 10);
             missile_y_top <= to_unsigned(0, 10);
         elsif rising_edge(clk) then
-            if refresh_screen = '1' and missile_info.missile_active then
+            if refresh_screen = '1' and missile_info.missile_active = '1' then
                 if missile_y_top == to_unsigned(0, 10) then
                     missile_info.missile_active <= '0';
                 else
