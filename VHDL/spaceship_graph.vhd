@@ -15,7 +15,7 @@ entity spaceship_graph is
         collision : in std_logic;
         number_of_lives : inout unsigned(1 downto 0);
         spaceship_on : out std_logic;
-        missile_on : out std_logic;
+        missile_on : out std_logic
     );
 end spaceship_graph;
 
