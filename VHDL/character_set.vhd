@@ -418,7 +418,7 @@ begin
     index <= to_integer(unsigned(char_addr));
 
     -- Process to index into FONT_ROM using char_addr
-    process (clk)
+    process (index)
     begin
         if index < 36 then
             char_data <= FONT_ROM(index);
