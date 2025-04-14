@@ -11,7 +11,7 @@ entity info_section_graph is
         refresh_screen : in std_logic;
         collision : in std_logic;
         number_of_lives : in unsigned(1 downto 0);
-        info_section_on : out std_logic;
+        info_section_on : out std_logic
     );
 end info_section_graph;
 
