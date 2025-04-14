@@ -14,6 +14,7 @@ entity spaceship_graph is
         refresh_screen : in std_logic;
         collision : in std_logic;
         number_of_lives : inout unsigned(1 downto 0);
+        asteroid_on : in std_logic;
         spaceship_on : out std_logic;
         missile_on : out std_logic
     );

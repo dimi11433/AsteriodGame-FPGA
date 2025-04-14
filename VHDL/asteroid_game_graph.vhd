@@ -33,9 +33,9 @@ architecture asteroid_arch of asteroid_graph is
     -- next start positions for the objects
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0);
 
-    signal asteroid_on, alien_1_on, spaceship_on, info_section_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on, info_section_o, missile_on : std_logic;
 
-    signal alien_color, spaceship_color, asteroid_color, info_section_color : std_logic_vector(2 downto 0);
+    signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color : std_logic_vector(2 downto 0);
 
     signal refresh_screen : std_logic;
 
@@ -75,9 +75,11 @@ begin
             btnd => btnd,
             btnc => btnc,
             refresh_screen => refresh_screen,
-            spaceship_on => spaceship_on,
+            collision => collision_with_asteroid or collision_with_alien,
             number_of_lives => number_of_lives,
-            collision => collision_with_asteroid or collision_with_alien
+            spaceship_on => spaceship_on,
+            asteroid_on => asteroid_on,
+            missile_on => missile_on
         );
     
     -- instantiate the alien graph
@@ -112,6 +114,7 @@ begin
     alien_color <= "110"; -- purple
     spaceship_color <= "010"; -- green
     asteroid_color <= "111"; -- white/greyish
+    missile_color <= "111"; -- blue
     info_section_color <= "111"; -- black
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y) - to_integer(asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_x_start));
@@ -173,6 +176,8 @@ begin
         if video_on = '1' then
             if info_section_on = '1' then
                 graph_rgb <= info_section_color;
+            elsif missile_on = '1' then
+                graph_rgb <= missile_color;
             elsif alien_1_on = '1' then
                 graph_rgb <= alien_color;
             elsif spaceship_on = '1' then
