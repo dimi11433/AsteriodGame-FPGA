@@ -33,7 +33,7 @@ architecture asteroid_arch of asteroid_graph is
     -- next start positions for the objects
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0);
 
-    signal asteroid_on, alien_1_on, spaceship_on, info_section_o, missile_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on : std_logic;
 
     signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color : std_logic_vector(2 downto 0);
 
