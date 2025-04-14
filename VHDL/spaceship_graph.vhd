@@ -12,6 +12,7 @@ entity spaceship_graph is
         btnc : in std_logic;
         refresh_screen : in std_logic;
         collision : in std_logic;
+        number_of_lives : inout unsigned(1 downto 0);
         spaceship_on : out std_logic
     );
 end spaceship_graph;
@@ -32,33 +33,34 @@ architecture spaceship_arch of spaceship_graph is
 
     signal collision_happened : std_logic;
 
+    signal number_of_lives_next : std_logic_vector(1 downto 0);
+
     -- spaceship image
     type rom_type_16 is array(0 to 23) of std_logic_vector(0 to 15);
     constant SPACESHIP_ROM : rom_type_16 := (
-        "0000000100000000", -- tip
-        "0000001110000000",
-        "0000011111000000",
-        "0000111111110000",
-        "0011111111111100", -- body starts
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100",
-        "0011111111111100", -- body ends
-        "0111111111111110", -- exhaust/flame begins
-        "1111111111111111",
-        "0111111111111110",
-        "0011111111111100" -- exhaust/flame ends
+        "000000010000000",
+        "000000111000000",
+        "000001111100000",
+        "000011111100000",
+        "000011111110000",
+        "000011111110000",
+        "000111111110000",
+        "000111101111000",
+        "000111000111000",
+        "000111101111000",
+        "000111111111000",
+        "000111111111000",
+        "000111111111000",
+        "000111111111000",
+        "001111111111110",
+        "011111111111110",
+        "011111111111110",
+        "011111111111110",
+        "011111111111110",
+        "011111111111110",
+        "001110000001100",
+        "001100000001100",
+        "000000000000000"
     );
 
 begin
@@ -70,6 +72,9 @@ begin
     spaceship_on <= '1' when (pixel_x >= spaceship_x_start and pixel_x <= spaceship_x_end) and
         (pixel_y >= spaceship_y_top and pixel_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else
         '0';
+
+    number_of_lives_next <= number_of_lives - 1 when (collision_happened = '1') else
+        number_of_lives;
 
     -- update the spaceship position based on button presses
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
@@ -105,11 +110,11 @@ begin
                     spaceship_x_start <= spaceship_x_start_next;
                     spaceship_y_top <= spaceship_y_top_next;
                 end if;
+                number_of_lives <= number_of_lives_next;
             end if;
             if (collision = '1') then
                 collision_happened <= '1';
             end if;
         end if;
     end process;
-
 end spaceship_arch;

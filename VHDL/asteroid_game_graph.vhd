@@ -45,6 +45,8 @@ architecture asteroid_arch of asteroid_graph is
 
     signal collision_with_asteroid_happened : std_logic;
 
+    signal number_of_lives : unsigned(1 downto 0);
+
     -- asteroid image
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
     constant ASTEROID_ROM : rom_type_8 := (
@@ -74,6 +76,7 @@ begin
             btnc => btnc,
             refresh_screen => refresh_screen,
             spaceship_on => spaceship_on,
+            number_of_lives => number_of_lives
             collision => collision_with_asteroid or collision_with_alien
         );
     
@@ -99,6 +102,7 @@ begin
             pixel_y => pix_y,
             refresh_screen => refresh_screen,
             collision => collision_with_asteroid or collision_with_alien,
+            number_of_lives => number_of_lives,
             info_section_on => info_section_on
         );
 
@@ -147,6 +151,7 @@ begin
         if reset = '1' then
             asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
             asteroid_y_top <= (others => '0');
+            number_of_lives <= "11"; -- 3 lives
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 if collision_with_asteroid_happened = '1' then
