@@ -24,6 +24,8 @@ architecture spaceship_arch of spaceship_graph is
     constant SPACESHIP_X_SIZE : integer := 16;
     constant SPACESHIP_Y_SIZE : integer := 24;
 
+    constant MAX_NUMBER_OF_MISSILES : integer := 200;
+
     signal spaceship_rom_bit : std_logic;
 
     signal spaceship_x_start, spaceship_x_end : unsigned(9 downto 0);
@@ -34,6 +36,8 @@ architecture spaceship_arch of spaceship_graph is
     signal collision_happened : std_logic;
 
     signal number_of_lives_next : std_logic_vector(1 downto 0);
+
+    signal missile_launched : std_logic;
 
     -- spaceship image
     type rom_type_16 is array(0 to 23) of std_logic_vector(0 to 15);
@@ -63,7 +67,36 @@ architecture spaceship_arch of spaceship_graph is
         "000000000000000"
     );
 
+    type missiles_infos is array(0 to MAX_NUMBER_OF_MISSILES - 1) of missile_prop;
+    signal info_of_missiles : missiles_infos;
+
+    type collisions is array(0 to MAX_NUMBER_OF_MISSILES - 1) of std_logic;
+    signal collision_happened_missiles : collisions;
 begin
+
+    -- generate the missiles
+    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+        missile_graph_unit : entity work.missile_graph
+            port map(
+                clk => clk,
+                reset => reset,
+                pixel_x => pixel_x,
+                pixel_y => pixel_y,
+                refresh_screen => refresh_screen,
+                missile_info => info_of_missiles(i)
+            );
+    end generate;
+
+    -- map collisions
+    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+        info_of_missiles(i).collision <= collision_happened_missiles(i);
+    end generate;
+    -- calculate collision happened
+    for i in 0 to MAX_NUMBER_OF_MISSILES - 1 generate
+        collision_happened_missiles(i) <= '1' when (info_of_missiles(i).missile_active = '1') and ((info_of_missiles(i).missile_on = '1') and ((asteroid_on = '1') or (alien_on = '1'))) else
+        '0';
+    end generate;
+
     spaceship_x_end <= spaceship_x_start + SPACESHIP_X_SIZE - 1;
     spaceship_y_bottom <= spaceship_y_top + SPACESHIP_Y_SIZE - 1;
 
@@ -79,6 +112,7 @@ begin
     -- update the spaceship position based on button presses
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
     begin
+        missile_launched <= '0';
         spaceship_x_start_next <= spaceship_x_start;
         spaceship_y_top_next <= spaceship_y_top;
         if (btnl = '1') and (spaceship_x_start > 0) then
@@ -90,6 +124,16 @@ begin
             spaceship_y_top_next <= spaceship_y_top - 1;
         elsif (btnd = '1') and (spaceship_y_bottom < SCREEN_HEIGHT - 1) then
             spaceship_y_top_next <= spaceship_y_top + 1;
+        elsif (btnc = '1') and (spaceship_y_top > 5) then
+            -- shoot a missile
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+                if (info_of_missiles(i).missile_active = '0' and missile_launched = '0') then
+                    info_of_missiles(i).missile_x_start <= spaceship_x_start + to_unsigned(SPACESHIP_X_SIZE / 2 - 2, 10);
+                    info_of_missiles(i).missile_y_top <= spaceship_y_top - to_unsigned(4, 10);
+                    info_of_missiles(i).missile_launch <= '1';
+                    missile_launched <= '1';
+                end if;
+            end loop;
         end if;
     end process;
 
@@ -100,6 +144,15 @@ begin
             spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
             spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
             collision_happened <= '0';
+
+            -- set the missiles inactive
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+                info_of_missiles(i).missile_active <= '0';
+                info_of_missiles(i).missile_launch <= '0';
+                info_of_missiles(i).collision <= '0';
+                info_of_missiles(i).missile_x_start <= to_unsigned(0, 10);
+                info_of_missiles(i).missile_y_top <= to_unsigned(0, 10);
+            end loop;
         elsif (rising_edge(clk)) then
             if (refresh_screen = '1') then
                 if (collision_happened = '1') then
