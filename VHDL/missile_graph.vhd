@@ -14,7 +14,7 @@ entity missile_graph is
         missile_active : inout std_logic;
         missile_launch : inout std_logic;
         collision : in std_logic;
-        missile_on : out std_logic;
+        missile_on : out std_logic
     );
 end missile_graph;
 
