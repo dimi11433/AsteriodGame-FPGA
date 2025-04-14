@@ -76,7 +76,7 @@ begin
             btnc => btnc,
             refresh_screen => refresh_screen,
             spaceship_on => spaceship_on,
-            number_of_lives => number_of_lives
+            number_of_lives => number_of_lives,
             collision => collision_with_asteroid or collision_with_alien
         );
     

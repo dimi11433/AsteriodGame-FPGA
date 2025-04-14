@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.Types.all;
 
 entity spaceship_graph is
     port (
@@ -35,7 +36,7 @@ architecture spaceship_arch of spaceship_graph is
 
     signal collision_happened : std_logic;
 
-    signal number_of_lives_next : std_logic_vector(1 downto 0);
+    signal number_of_lives_next : unsigned(1 downto 0);
 
     signal missile_launched : std_logic;
 
