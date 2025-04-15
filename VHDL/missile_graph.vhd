@@ -44,8 +44,6 @@ architecture missile_arch of missile_graph is
 
     signal missile_y_tops_next : missile_vector_prop;
 
-    signal is_on;
-
 begin
     -- missile_rom_bit <= MISSILE_BITMAP(to_integer(pixel_y) - to_integer(missile_y_top))(to_integer(pixel_x) - to_integer(missile_x_start));
     process (pixel_x, pixel_y)

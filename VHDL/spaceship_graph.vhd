@@ -110,7 +110,7 @@ begin
                 launch_missile <= '1';
             end if;
         end if;
-    end process
+    end process;
 
     -- at reset, set the spaceship position to the center of the screen
     process (clk, reset)
