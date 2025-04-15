@@ -71,6 +71,7 @@ begin
         port map(
             clk => clk,
             reset => reset,
+            pixel_tick => pixel_tick,
             pixel_x => pix_x,
             pixel_y => pix_y,
             btnl => btnl,

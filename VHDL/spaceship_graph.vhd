@@ -6,6 +6,7 @@ use work.Types.all;
 entity spaceship_graph is
     port (
         clk, reset : in std_logic;
+        pixel_tick : in std_logic;
         pixel_x : in unsigned(9 downto 0);
         pixel_y : in unsigned(9 downto 0);
         btnl, btnr : in std_logic;
@@ -102,9 +103,9 @@ begin
     end process;
 
     -- launch missile if btnc is pressed
-    process (clk)
+    process (pixel_tick)
     begin
-        launch_missile <= '1';
+        launch_missile <= '0';
         if (rising_edge(clk)) then
             if (btnc = '1' and (spaceship_y_top > 5)) then
                 launch_missile <= '1';
