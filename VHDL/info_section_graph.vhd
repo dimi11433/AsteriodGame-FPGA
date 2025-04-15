@@ -55,7 +55,7 @@ begin
 
     info_section_on <= bottom_bar_on or left_bar_on or text_on;
 
-    get_character_rom_unit : work.get_character_rom
+    get_character_rom_unit : entity work.get_character_rom
         port map (
             char_addr => fetch_character_addr,
             char_data => character_rom
