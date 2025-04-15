@@ -127,7 +127,7 @@ begin
             if (missile_active_array(i) = '0') then
                 missile_x_starts(i) <= missile_x;
                 missile_y_tops(i) <= missile_y;
-                missile_active_array(i) = '1';
+                missile_active_array(i) <= '1';
             end if;
         end loop;
     end process;
