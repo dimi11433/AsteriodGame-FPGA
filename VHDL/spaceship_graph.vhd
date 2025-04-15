@@ -203,6 +203,7 @@ begin
             spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
             spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
             collision_happened <= '0';
+            number_of_lives <= to_unsigned(3, 2);
 
             -- set the missiles inactive
             for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
