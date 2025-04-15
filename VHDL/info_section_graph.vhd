@@ -35,10 +35,10 @@ architecture behavioral of info_section_graph is
     signal text_y_top, text_x_start, text_y_bottom, text_x_end : unsigned(9 downto 0);
 
 begin
-    text_y_top <= to_unsigned(2, 10);
-    text_x_start <= to_unsigned(2, 10);
-    text_y_bottom <= to_unsigned(10, 10);
-    text_x_end <= to_unsigned(10, 10);
+    text_y_top <= to_unsigned(10, 10);
+    text_x_start <= to_unsigned(10, 10);
+    text_y_bottom <= to_unsigned(18, 10);
+    text_x_end <= to_unsigned(18, 10);
     left_bar_on <= '1' when (pixel_x >= INFO_SECTION_LEFT and pixel_x <= INFO_SECTION_RIGHT) and
          (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';

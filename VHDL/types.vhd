@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 -- Package Declaration
 package Types is
-    type char_bitmap is array (0 to 7) of std_logic_vector(7 downto 0);
+    type char_bitmap is array (0 to 7) of std_logic_vector(0 to 7);
 
     type character_display_prop is record
         char_data : char_bitmap;
