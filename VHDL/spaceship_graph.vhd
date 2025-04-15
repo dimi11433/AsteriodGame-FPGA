@@ -68,7 +68,8 @@ architecture spaceship_arch of spaceship_graph is
         "0111111111111100",
         "0011100000011000",
         "0011000000011000",
-        "0010000000001000"
+        "0010000000001000",
+        "0000000000000000"
     );
 
     type missile_prop is record
