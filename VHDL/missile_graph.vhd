@@ -58,7 +58,7 @@ begin
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
             missile_x_ends(i) <= missile_x_starts(i) + to_unsigned(MISSILE_SIZE, 10);
-            missile_y_bottom(i) <= missile_y_tops(i) + to_unsigned(MISSILE_SIZE, 10);
+            missile_y_bottoms(i) <= missile_y_tops(i) + to_unsigned(MISSILE_SIZE, 10);
         end loop;
     end process;
 
