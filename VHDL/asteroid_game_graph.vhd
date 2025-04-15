@@ -47,6 +47,10 @@ architecture asteroid_arch of asteroid_graph is
 
     signal number_of_lives : unsigned(1 downto 0);
 
+    signal launch_missile : std_logic;
+
+    signal missile_x, missile_y : unsigned(9 downto 0);
+
     -- asteroid image
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
     constant ASTEROID_ROM : rom_type_8 := (
@@ -78,9 +82,9 @@ begin
             collision => collision_with_asteroid or collision_with_alien,
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
-            asteroid_on => asteroid_on,
-            alien_on => alien_1_on,
-            missile_on => missile_on
+            missile_x => missile_x,
+            missile_y => missile_y,
+            launch_missile => launch_missile
         );
     
     -- instantiate the alien graph
@@ -107,6 +111,19 @@ begin
             collision => collision_with_asteroid or collision_with_alien,
             number_of_lives => number_of_lives,
             info_section_on => info_section_on
+        );
+
+    missile_graph_unit : entity work.missile_graph
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_x => pix_x,
+            pixel_y => pix_y,
+            refresh_screen => refresh_screen,
+            missile_x =>  missile_x,
+            missile_y => missile_y,
+            launch_missile => launch_missile,
+            missile_on => missile_on
         );
 
     pix_x <= unsigned(pixel_x);
