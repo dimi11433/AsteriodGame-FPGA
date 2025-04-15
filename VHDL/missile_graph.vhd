@@ -102,7 +102,7 @@ begin
             -- end if;
             if refresh_screen = '1' then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-                    if missile_active_array(i) <= '1' then
+                    if missile_active_array(i) = '1' then
                         if missile_y_tops(i) = to_unsigned(0, 10) then
                             missile_active_array(i) <= '0';
                             missile_x_starts(i) <= to_unsigned(0, 10);
@@ -123,16 +123,18 @@ begin
     -- when the missile is launched, set its position and activate it
     process (launch_missile)
     begin
-        for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-            if (missile_active_array(i) = '0') then
-                missile_x_starts(i) <= missile_x;
-                missile_y_tops(i) <= missile_y;
-                missile_active_array(i) <= '1';
-            end if;
-        end loop;
+        if launch_missile = '1' then
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+                if (missile_active_array(i) = '0') then
+                    missile_x_starts(i) <= missile_x;
+                    missile_y_tops(i) <= missile_y;
+                    missile_active_array(i) <= '1';
+                end if;
+            end loop;
+        end if;
     end process;
 
-    process (pixel_tick)
+    process (pixel_x, pixel_y)
     begin
         missile_on <= '0';
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
