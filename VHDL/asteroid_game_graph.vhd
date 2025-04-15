@@ -134,7 +134,7 @@ begin
     alien_color <= "110"; -- purple
     spaceship_color <= "010"; -- green
     asteroid_color <= "111"; -- white/greyish
-    missile_color <= "111"; -- blue
+    missile_color <= "111"; -- black
     info_section_color <= "111"; -- black
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y) - to_integer(asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_x_start));
