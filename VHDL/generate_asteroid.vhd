@@ -150,7 +150,7 @@ begin
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
-    asteroid_color <= "111"; -- white/greyish 
+    asteroid_colour <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
     process(pix_y, pix_x)
