@@ -164,7 +164,7 @@ begin
     process(pix_x, pix_y)
     begin
         for i in 0 to 3 loop
-            asteroid_on(i) <= '1' when (pix_x >= asteroid_id_arry(i).asteroid_x_start and pix_x <= asteroid_id_arry(i).asteroid_x_end) and
+            asteroid_on(i) <= '1' when (pix_x <= asteroid_id_arry(i).asteroid_x_start and pix_x <= asteroid_id_arry(i).asteroid_x_end) and
             (pix_y >= asteroid_id_arry(i).asteroid_y_top and pix_y <= asteroid_id_arry(i).asteroid_y_bottom) and (asteroid_rom_bit(i) = '1') else
             '0';
         end loop;
