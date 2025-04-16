@@ -55,9 +55,12 @@ architecture asteroids of asteroid_gen is
     end record asteroid_mov;
 
     --we create an array of records which store the asteroids size aka ID
-    type  asteroid_id_arry is array (0 to 3) of asteroid_id;
+    type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
     --create an array of records which store the movements of each asteroid
-    type asteroid_mov_arry is array (0 to 3) of asteroid_mov;
+    type asteroid_mov_arry_t is array (0 to 3) of asteroid_mov;
+
+    signal asteroid_id_arry : asteroid_id_array_t;
+    signal asteroid_mov_arry : asteroid_mov_array_t;
 
     
     --asteroid image
