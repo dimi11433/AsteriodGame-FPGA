@@ -1,78 +1,102 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use work.Types.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use work.Types.ALL;
 
 entity info_section_graph is
-    port (
-        clk, reset : in std_logic;
-        pixel_x : in unsigned(9 downto 0);
-        pixel_y : in unsigned(9 downto 0);
-        refresh_screen : in std_logic;
-        collision : in std_logic;
-        number_of_lives : in unsigned(1 downto 0);
-        info_section_on : out std_logic
+    generic (
+        SCREEN_WIDTH       : integer := 640;
+        SCREEN_HEIGHT      : integer := 480;
+        INFO_LEFT          : unsigned(9 downto 0) := to_unsigned(100, 10);
+        INFO_RIGHT         : unsigned(9 downto 0) := to_unsigned(102, 10);
+        INFO_TOP           : unsigned(9 downto 0) := to_unsigned(40,  10);
+        INFO_BOTTOM        : unsigned(9 downto 0) := to_unsigned(42,  10);
+        TEXT_X_START       : unsigned(9 downto 0) := to_unsigned(10,  10);
+        TEXT_Y_TOP         : unsigned(9 downto 0) := to_unsigned(10,  10);
+        TEXT_X_END         : unsigned(9 downto 0) := to_unsigned(18,  10);
+        TEXT_Y_BOTTOM      : unsigned(9 downto 0) := to_unsigned(18,  10)
     );
-end info_section_graph;
+    port (
+        i_clk             : in  std_logic;
+        i_reset_n         : in  std_logic;
+        i_pixel_x         : in  unsigned(9 downto 0);
+        i_pixel_y         : in  unsigned(9 downto 0);
+        i_refresh_screen  : in  std_logic;
+        i_collision       : in  std_logic;
+        i_number_of_lives : in  unsigned(1 downto 0);
+        o_info_on         : out std_logic
+    );
+end entity info_section_graph;
 
-architecture behavioral of info_section_graph is
-    constant SCREEN_WIDTH : integer := 640;
-    constant SCREEN_HEIGHT : integer := 480;
-
-    constant INFO_SECTION_BOTTOM : integer := 42;
-    constant INFO_SECTION_TOP : integer := 40;
-    constant INFO_SECTION_RIGHT : integer := 102;
-    constant INFO_SECTION_LEFT : integer := 100;
-
-    signal left_bar_on, bottom_bar_on, text_on : std_logic;
-
-    signal fetch_character_addr : std_logic_vector(7 downto 0);
-
-    signal character_rom : char_bitmap;
-
-    signal text_rom_bit : std_logic;
-
-    signal text_y_top, text_x_start, text_y_bottom, text_x_end : unsigned(9 downto 0);
-
+architecture rtl of info_section_graph is
+    -- Internal signals
+    signal s_char_addr     : unsigned(7 downto 0);
+    signal s_char_data     : char_bitmap;
+    signal s_left_bar_on   : std_logic;
+    signal s_bottom_bar_on : std_logic;
+    signal s_text_on       : std_logic;
 begin
-    text_y_top <= to_unsigned(10, 10);
-    text_x_start <= to_unsigned(10, 10);
-    text_y_bottom <= to_unsigned(18, 10);
-    text_x_end <= to_unsigned(18, 10);
-    left_bar_on <= '1' when (pixel_x >= INFO_SECTION_LEFT and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
-         '0';
 
-    bottom_bar_on <= '1' when (pixel_x >= to_unsigned(0, 10) and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
-         '0';
-
-    text_rom_bit <= character_rom(to_integer(pixel_y(2 downto 0) - text_y_top(2 downto 0)))(to_integer(pixel_x(2 downto 0) - text_x_start(2 downto 0)));
-
-    text_on <= '1' when (pixel_x >= text_x_start and pixel_x <= text_x_end) and
-        (pixel_y >= text_y_top and pixel_y <= text_y_bottom) and (text_rom_bit = '1') else
-        '0';
-
-    info_section_on <= bottom_bar_on or left_bar_on or text_on;
-
-    get_character_rom_unit : entity work.get_character_rom
+    ----------------------------------------------------------------------------
+    -- Character ROM instantiation
+    ----------------------------------------------------------------------------
+    rom_inst: entity work.get_character_rom
         port map (
-            char_addr => fetch_character_addr,
-            char_data => character_rom
+            char_addr => s_char_addr,
+            char_data => s_char_data
         );
 
-    -- get the character address from the number of lives
-    process(clk, reset)
+    ----------------------------------------------------------------------------
+    -- Address generation process (synchronous, active-low reset)
+    ----------------------------------------------------------------------------
+    addr_proc: process(i_clk, i_reset_n)
     begin
-        if reset = '1' then
-            fetch_character_addr <= (others => '0');
-        elsif rising_edge(clk) then
-            if refresh_screen = '1' then
-                fetch_character_addr <= std_logic_vector(to_unsigned(to_integer(number_of_lives), 8));
+        if i_reset_n = '0' then
+            s_char_addr <= (others => '0');
+        elsif rising_edge(i_clk) then
+            if i_refresh_screen = '1' then
+                s_char_addr <= resize(i_number_of_lives, 8);
             end if;
         end if;
-    end process;
+    end process addr_proc;
 
-    -- display the rom
-    
-end behavioral;
+    ----------------------------------------------------------------------------
+    -- Combinational drawing logic
+    ----------------------------------------------------------------------------
+    draw_proc: process(i_pixel_x, i_pixel_y, s_char_data)
+        variable v_row : integer range 0 to 7;
+        variable v_col : integer range 0 to 7;
+    begin
+        -- Left vertical bar
+        if (i_pixel_x >= INFO_LEFT) and (i_pixel_x <= INFO_RIGHT)
+           and (i_pixel_y <= INFO_BOTTOM) then
+            s_left_bar_on <= '1';
+        else
+            s_left_bar_on <= '0';
+        end if;
+
+        -- Bottom horizontal bar
+        if (i_pixel_x <= INFO_RIGHT)
+           and (i_pixel_y >= INFO_TOP) and (i_pixel_y <= INFO_BOTTOM) then
+            s_bottom_bar_on <= '1';
+        else
+            s_bottom_bar_on <= '0';
+        end if;
+
+        -- Text region
+        if (i_pixel_x >= TEXT_X_START) and (i_pixel_x <= TEXT_X_END)
+           and (i_pixel_y >= TEXT_Y_TOP) and (i_pixel_y <= TEXT_Y_BOTTOM) then
+            v_row := to_integer(i_pixel_y - TEXT_Y_TOP);
+            v_col := to_integer(i_pixel_x - TEXT_X_START);
+            s_text_on <= s_char_data(v_row)(v_col);
+        else
+            s_text_on <= '0';
+        end if;
+    end process draw_proc;
+
+    ----------------------------------------------------------------------------
+    -- Combine all elements
+    ----------------------------------------------------------------------------
+    o_info_on <= s_left_bar_on or s_bottom_bar_on or s_text_on;
+
+end architecture rtl;
