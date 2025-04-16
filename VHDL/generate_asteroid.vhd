@@ -7,7 +7,7 @@ entity asteroid_gen is
         clk, reset: in std_logic;
         pixel_tick : in std_logic;
         video_on : in std_logic;
-        spaceship_on : in std_logic;
+        spaceship_on: in std_logic;
         pixel_x : in std_logic_vector(9 downto 0);
         pixel_y : in std_logic_vector(9 downto 0);
         graph_rgb : out std_logic_vector(2 downto 0)
@@ -20,27 +20,23 @@ architecture asteroids of asteroid_gen is
     constant SCREEN_WIDTH : integer := 640;
     constant SCREEN_HEIGHT : integer := 480;
 
+    type size_array_t is array(0 to 3) of integer;
+    constant ASTEROID_SIZE : size_array_t := (
+      0 => 10,
+      1 => 15,
+      2 => 20,
+      3 => 25
+    );
 
-    constant ASTEROID_SIZE : array(0 to 3) of integer := (10, 15, 20, 25);
 
     constant ASTEROID_DY : integer := 1;
-
     constant ASTEROID_DX : integer := 1;
+
+    
 
     signal pix_x, pix_y : unsigned(9 downto 0);
 
-    signal asteroid_rom_bit : std_logic_vector(3 downto 0);
-
-    signal asteroid_on : std_logic_vector(3 downto 0);
-
-    signal asteroid_colour : std_logic_vector(2 downto 0) := "111";
-
-    signal refresh_screen : std_logic;
-
-    signal collision_with_asteroid : std_logic;
-
-    signal collision_with_asteroid_happened : std_logic;
-    
+    signal asteroid_rom_bit : std_logic_vector(1 downto 0);
 
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
@@ -58,13 +54,23 @@ architecture asteroids of asteroid_gen is
     type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
     --create an array of records which store the movements of each asteroid
     type asteroid_mov_arry_t is array (0 to 3) of asteroid_mov;
+    
+    
+    signal asteroid_id_arry : asteroid_id_arry_t ;
+    signal asteroid_mov_arry : asteroid_mov_arry_t;
+    
+    signal asteroid_on : std_logic_vector(1 downto 0);
 
-    signal asteroid_id_arry : asteroid_id_array_t;
-    signal asteroid_mov_arry : asteroid_mov_array_t;
+    signal asteroid_colour : std_logic_vector(2 downto 0);
 
+    signal refresh_screen : std_logic;
+
+    signal collision_with_asteroid : std_logic;
+
+    signal collision_with_asteroid_happened : std_logic;
     
     --asteroid image
-    type rom_type_10 is array(0 to 9) of std_logic_vector(0 downto 9);
+    type rom_type_10 is array(0 downto 9) of std_logic_vector(0 downto 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
         "0011111100",
         "0111111110",
@@ -78,7 +84,7 @@ architecture asteroids of asteroid_gen is
         "0011111100"
     );
 
-    type rom_type_15 is array(0 to 14) of std_logic_vector(0 downto 14);
+    type rom_type_15 is array(0 downto 14) of std_logic_vector(0 downto 14);
     constant ASTEROID_ROM_2 : rom_type_15 := (
         "0001111111000",
         "0011111111100",
@@ -98,14 +104,14 @@ architecture asteroids of asteroid_gen is
 
     );
 
-    type rom_type_20 is array(0 to 19) of std_logic_vector(0 downto 19);
+    type rom_type_20 is array(0 downto 19) of std_logic_vector(0 downto 19);
     constant ASTEROID_ROM_3 : rom_type_20 := (  
-        "0001111111111000",  
+        "0001111111111000", 
         "0011111111111100",  
         "0111111111111110",  
         "0111111111111110",  
         "1111111111111111",  
-        "1111111111111111", 
+        "1111111111111111",  
         "1111111111111111",  
         "1111111111111111",  
         "1111111111111111",  
@@ -120,7 +126,7 @@ architecture asteroids of asteroid_gen is
         "0000111111110000",  
         "0000011111100000"  
     );
-    type rom_type_25 is array(0 to 24) of std_logic_vector(0 downto 24);
+    type rom_type_25 is array(0 downto 24) of std_logic_vector(0 downto 24);
     constant ASTEROID_ROM_4 : rom_type_25 :=(
         "00000111111111100000",  
         "00001111111111110000",  
@@ -152,13 +158,14 @@ begin
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
-    
+    asteroid_colour <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
     process(pix_y, pix_x)
     begin 
         for i in 0 to 3 loop 
-            asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))(to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
+            asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))
+            (to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
 
         end loop;
     end process;
@@ -166,9 +173,16 @@ begin
     process(pix_x, pix_y)
     begin
         for i in 0 to 3 loop
-            asteroid_on(i) <= '1' when (pix_x >= asteroid_id_arry(i).asteroid_x_start and pix_x <= asteroid_id_arry(i).asteroid_x_end) and
-            (pix_y >= asteroid_id_arry(i).asteroid_y_top and pix_y <= asteroid_id_arry(i).asteroid_y_bottom) and (asteroid_rom_bit(i) = '1') else
-            '0';
+            if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
+                pix_x <= asteroid_id_arry(i).asteroid_x_end   and
+                pix_y >= asteroid_id_arry(i).asteroid_y_top   and
+                pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
+                    asteroid_rom_bit(i) = '1')
+            then
+              asteroid_on(i) <= '1';
+            else
+              asteroid_on(i) <= '0';
+            end if;
         end loop;
     end process;
 
@@ -215,7 +229,7 @@ begin
             for i in 0 to 3 loop
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE(i) / 2, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
-                number_of_lives <= "11"; -- 3 lives
+                --number_of_lives <= "11"; -- 3 lives
             end loop;
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
