@@ -73,7 +73,7 @@ begin
     spaceship_x_end <= spaceship_x_start + SPACESHIP_X_SIZE - 1;
     spaceship_y_bottom <= spaceship_y_top + SPACESHIP_Y_SIZE - 1;
 
-    spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y) - to_integer(spaceship_y_top))(to_integer(pixel_x) - to_integer(spaceship_x_start));
+    spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y(4 downto 0) - spaceship_y_top(4 downto 0)))(to_integer(pixel_x(3 downto 0) - spaceship_x_start(3 downto 0)));
 
     spaceship_on <= '1' when (pixel_x >= spaceship_x_start and pixel_x <= spaceship_x_end) and
         (pixel_y >= spaceship_y_top and pixel_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else

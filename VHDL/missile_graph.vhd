@@ -49,7 +49,7 @@ begin
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-            missile_rom_bit_array(i) <= MISSILE_BITMAP(to_integer(pixel_y) - to_integer(missile_y_tops(i)))(to_integer(pixel_x) - to_integer(missile_x_starts(i)));
+            missile_rom_bit_array(i) <= MISSILE_BITMAP(to_integer(pixel_y(1 downto 0) - missile_y_tops(i)(1 downto 0)))(to_integer(pixel_x(1 downto 0) - missile_x_starts(i)(1 downto 0)));
         end loop;
     end process;
     -- missile_x_end <= missile_x_start + to_unsigned(MISSILE_SIZE, 10);
