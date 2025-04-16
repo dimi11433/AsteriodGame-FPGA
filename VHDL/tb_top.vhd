@@ -32,10 +32,10 @@ architecture sim of tb_asteroids_top is
     signal btnu      : std_logic := '0';
     signal btnd      : std_logic := '0';
     signal btnc      : std_logic := '0';
-    signal hsync     : std_logic;
-    signal vsync     : std_logic;
-    signal comp_sync : std_logic;
-    signal rgb       : std_logic_vector(2 downto 0);
+    signal hsync     : std_logic := '0';
+    signal vsync     : std_logic := '0';
+    signal comp_sync : std_logic := '0';
+    signal rgb       : std_logic_vector(2 downto 0) := (others => '0');
 
 begin
 
@@ -61,9 +61,9 @@ begin
     clk_gen: process
     begin
         while true loop
-            clk <= '0';
-            wait for 5 ns;
             clk <= '1';
+            wait for 5 ns;
+            clk <= '0';
             wait for 5 ns;
         end loop;
         wait;
