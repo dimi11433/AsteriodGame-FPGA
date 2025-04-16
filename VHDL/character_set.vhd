@@ -420,7 +420,7 @@ begin
     -- Process to index into FONT_ROM using char_addr
     process (index)
     begin
-        if index < 36 then
+        if index < 36 and index >= 0 then
             char_data <= FONT_ROM(index);
         else
             char_data <= (others => (others => '0'));
