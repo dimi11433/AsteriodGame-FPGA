@@ -23,13 +23,23 @@ architecture asteroids of asteroid_gen is
     constant ASTEROID_SIZE : array(0 to 3) of integer := (10, 15, 20, 25);
 
     constant ASTEROID_DY : integer := 1;
-    constant ASTEROID_DX : integer := 1;
 
-    
+    constant ASTEROID_DX : integer := 1;
 
     signal pix_x, pix_y : unsigned(9 downto 0);
 
-    signal asteroid_rom_bit : std_logic_vector(1 downto 0);
+    signal asteroid_rom_bit : std_logic_vector(3 downto 0);
+
+    signal asteroid_on : std_logic_vector(3 downto 0);
+
+    signal asteroid_colour : std_logic_vector(2 downto 0) := "111";
+
+    signal refresh_screen : std_logic;
+
+    signal collision_with_asteroid : std_logic;
+
+    signal collision_with_asteroid_happened : std_logic;
+    
 
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
@@ -48,19 +58,7 @@ architecture asteroids of asteroid_gen is
     --create an array of records which store the movements of each asteroid
     type asteroid_mov_arry is array (0 to 3) of asteroid_mov;
 
-    signal asteroid_on : std_logic_vector(1 downto 0);
-
-    signal asteroid_colour : std_logic_vector(2 downto 0);
-
-    signal refresh_screen : std_logic;
-
-    signal collision_with_asteroid : std_logic;
-
-    signal collision_with_asteroid_happened : std_logic;
-    signal i : std_logic;
-
     
-
     --asteroid image
     type rom_type_10 is array(0 downto 9) of std_logic_vector(0 downto 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
@@ -150,7 +148,7 @@ begin
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
-    asteroid_colour <= "111"; -- white/greyish 
+    
 
     --Is the bit we are at the same bit in any of the asteroids.
     process(pix_y, pix_x)
