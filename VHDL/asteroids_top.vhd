@@ -12,8 +12,8 @@ entity asteroids_top is
 end asteroids_top;
 
 architecture arch of asteroids_top is
-    signal pixel_x, pixel_y : std_logic_vector(9 downto 0);
-    signal video_on, pixel_tick : std_logic;
+    signal pixel_x, pixel_y : std_logic_vector(9 downto 0) := (others => '0');
+    signal video_on, pixel_tick : std_logic := '0';
     signal rgb_reg, rgb_next : std_logic_vector(2 downto 0);
 begin
     -- instantiate VGA sync

@@ -47,7 +47,7 @@ begin
          (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';
 
-    text_rom_bit <= character_rom(to_integer(pixel_y) - to_integer(text_y_top))(to_integer(pixel_x) - to_integer(text_x_start));
+    text_rom_bit <= character_rom(to_integer(pixel_y(2 downto 0) - text_y_top(2 downto 0)))(to_integer(pixel_x(2 downto 0) - text_x_start(2 downto 0)));
 
     text_on <= '1' when (pixel_x >= text_x_start and pixel_x <= text_x_end) and
         (pixel_y >= text_y_top and pixel_y <= text_y_bottom) and (text_rom_bit = '1') else

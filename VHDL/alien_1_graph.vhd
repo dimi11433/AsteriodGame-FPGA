@@ -57,7 +57,7 @@ architecture behavior of alien_1_graph is
     );
 
 begin
-    alien_rom_bit <= ALIEN_ROM(to_integer(pixel_y) - to_integer(alien_y_top))(to_integer(pixel_x) - to_integer(alien_x_start));
+    alien_rom_bit <= ALIEN_ROM(to_integer(pixel_y(3 downto 0) - alien_y_top(3 downto 0)))(to_integer(pixel_x(4 downto 0) - alien_x_start(4 downto 0)));
 
     alien_on <= '1' when (pixel_x >= alien_x_start and pixel_x <= alien_x_end) and
         (pixel_y >= alien_y_top and pixel_y <= alien_y_bottom) and (alien_rom_bit = '1') and (active = '1') else
