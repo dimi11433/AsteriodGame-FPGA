@@ -71,7 +71,7 @@ architecture asteroids of asteroid_gen is
     signal collision_with_asteroid_happened : std_logic;
     
     --asteroid image
-    type rom_type_10 is array(0 downto 9) of std_logic_vector(0 downto 9);
+    type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
         "0011111100",
         "0111111110",
@@ -85,7 +85,7 @@ architecture asteroids of asteroid_gen is
         "0011111100"
     );
 
-    type rom_type_15 is array(0 downto 14) of std_logic_vector(0 downto 14);
+    type rom_type_15 is array(0 to 14) of std_logic_vector(0 to 14);
     constant ASTEROID_ROM_2 : rom_type_15 := (
         "0001111111000",
         "0011111111100",
@@ -105,7 +105,7 @@ architecture asteroids of asteroid_gen is
 
     );
 
-    type rom_type_20 is array(0 downto 19) of std_logic_vector(0 downto 19);
+    type rom_type_20 is array(0 to 19) of std_logic_vector(0 to 19);
     constant ASTEROID_ROM_3 : rom_type_20 := (  
         "0001111111111000", 
         "0011111111111100",  
@@ -127,7 +127,7 @@ architecture asteroids of asteroid_gen is
         "0000111111110000",  
         "0000011111100000"  
     );
-    type rom_type_25 is array(0 downto 24) of std_logic_vector(0 downto 24);
+    type rom_type_25 is array(0 to 24) of std_logic_vector(0 to 24);
     constant ASTEROID_ROM_4 : rom_type_25 :=(
         "00000111111111100000",  
         "00001111111111110000",  
