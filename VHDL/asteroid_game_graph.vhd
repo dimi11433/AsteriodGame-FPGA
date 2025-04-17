@@ -72,6 +72,7 @@ begin
             reset => reset,
             pixel_tick => pixel_tick,
             video_on  => video_on,
+            refresh_screen => refresh_screen,
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
