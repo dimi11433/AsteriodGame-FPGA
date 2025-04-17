@@ -100,18 +100,6 @@ begin
             missile_y => missile_y,
             launch_missile => launch_missile
         );
-
-    asteroid_gen_unit : entity work.asteroid_gen
-        port map(
-            clk => clk,
-            reset => reset,
-            pixel_tick => pixel_tick,
-            video_on => video_on ,
-            spaceship_on => spaceship_on,
-            pixel_x => pixel_x,
-            pixel_y => pixel_y,
-            refresh_screen => refresh_screen,
-        );
     
     -- instantiate the alien graph
     alien_graph_unit : entity work.alien_1_graph
