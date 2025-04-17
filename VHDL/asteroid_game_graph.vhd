@@ -65,6 +65,18 @@ architecture asteroid_arch of asteroid_graph is
     );
 
 begin
+    --instantiate asteroid generation
+    asteroid_gen_unit : entity work.asteroid_gen
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_tick => pixel_tick,
+            video_on  => video_on,
+            spaceship_on => spaceship_on,
+            pixel_x  => pixel_x,
+            pixel_y  => pixel_y,
+            graph_rgb => graph_rgb
+        );
 
     -- instantiate the spaceship graph
     spaceship_graph_unit : entity work.spaceship_graph

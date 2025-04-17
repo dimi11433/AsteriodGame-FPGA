@@ -10,6 +10,7 @@ entity asteroid_gen is
         spaceship_on: in std_logic;
         pixel_x : in std_logic_vector(9 downto 0);
         pixel_y : in std_logic_vector(9 downto 0);
+        refresh_screen: in std_logic;
         graph_rgb : out std_logic_vector(2 downto 0)
     );
 
@@ -63,7 +64,7 @@ architecture asteroids of asteroid_gen is
 
     signal asteroid_colour : std_logic_vector(2 downto 0);
 
-    signal refresh_screen : std_logic;
+    -- signal refresh_screen : std_logic;
 
     signal collision_with_asteroid : std_logic;
 
@@ -194,9 +195,9 @@ begin
         end loop;
     end process; 
 
-    refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
-        pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
-        '0';
+    -- refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
+    --     pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
+    --     '0';
     process(spaceship_on, asteroid_on)
     begin
         for i in 0 to 3 loop
