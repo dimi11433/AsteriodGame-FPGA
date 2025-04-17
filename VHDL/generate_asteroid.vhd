@@ -125,7 +125,8 @@ architecture asteroids of asteroid_gen is
         "00111111111111000000",  
         "00011111111110000000",  
         "00001111111100000000",  
-        "00000111111000000000"  
+        "00000111111000000000",
+        "00000000000000000000"
     );
     type rom_type_25 is array(0 to 24) of std_logic_vector(0 to 24);
     constant ASTEROID_ROM_4 : rom_type_25 :=(
