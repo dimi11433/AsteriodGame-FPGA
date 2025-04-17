@@ -60,7 +60,7 @@ architecture asteroids of asteroid_gen is
     signal asteroid_id_arry : asteroid_id_arry_t ;
     signal asteroid_mov_arry : asteroid_mov_arry_t;
     
-    signal asteroid_on : std_logic_vector(1 downto 0);
+    signal asteroid_on : std_logic_vector(3 downto 0);
 
     signal asteroid_colour : std_logic_vector(2 downto 0);
 
