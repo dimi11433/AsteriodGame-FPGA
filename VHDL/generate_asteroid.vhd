@@ -37,7 +37,7 @@ architecture asteroids of asteroid_gen is
 
     signal pix_x, pix_y : unsigned(9 downto 0);
 
-    signal asteroid_rom_bit : std_logic_vector(1 downto 0);
+    signal asteroid_rom_bit : std_logic_vector(3 downto 0);
 
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
