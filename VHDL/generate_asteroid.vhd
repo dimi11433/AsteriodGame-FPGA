@@ -11,7 +11,7 @@ entity asteroid_gen is
         pixel_x : in std_logic_vector(9 downto 0);
         pixel_y : in std_logic_vector(9 downto 0);
         refresh_screen: in std_logic;
-        graph_rgb : out std_logic_vector(2 downto 0)
+        asteroid_on_certainly: out std_logic;
     );
 
 
@@ -183,6 +183,12 @@ begin
               asteroid_on(i) <= '1';
             else
               asteroid_on(i) <= '0';
+            end if;
+
+            if (asteroid_on(i) == '1') then
+                asteroid_on_certainly <= '1';
+            else
+                asteroid_on_certainly <= '0';
             end if;
         end loop;
     end process;

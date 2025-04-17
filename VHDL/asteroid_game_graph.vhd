@@ -33,9 +33,9 @@ architecture asteroid_arch of asteroid_graph is
     -- next start positions for the objects
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0);
 
-    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on, asteroids_on : std_logic;
 
-    signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color : std_logic_vector(2 downto 0);
+    signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color, multiasteroid_color : std_logic_vector(2 downto 0);
 
     signal refresh_screen : std_logic;
 
@@ -75,7 +75,7 @@ begin
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
-            graph_rgb => graph_rgb
+            asteroid_on_certainly => asteroids_on
         );
 
     -- instantiate the spaceship graph
@@ -98,6 +98,18 @@ begin
             missile_x => missile_x,
             missile_y => missile_y,
             launch_missile => launch_missile
+        );
+
+    asteroid_gen_unit : entity work.asteroid_gen
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_tick => pixel_tick,
+            video_on => video_on ,
+            spaceship_on => spaceship_on,
+            pixel_x => pixel_x,
+            pixel_y => pixel_y,
+            refresh_screen => refresh_screen,
         );
     
     -- instantiate the alien graph
@@ -148,6 +160,7 @@ begin
     asteroid_color <= "111"; -- white/greyish
     missile_color <= "111"; -- black
     info_section_color <= "111"; -- black
+    multiasteroid_color <= "000"; --black
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y(2 downto 0) - asteroid_y_top(2 downto 0)))(to_integer(pix_x(2 downto 0) - asteroid_x_start(2 downto 0)));
 
@@ -202,7 +215,7 @@ begin
         end if;
     end process;
 
-    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on)
     begin
         if video_on = '1' then
             if info_section_on = '1' then
@@ -215,6 +228,8 @@ begin
                 graph_rgb <= spaceship_color;
             elsif asteroid_on = '1' then
                 graph_rgb <= asteroid_color;
+            elsif asteroids_on = '1' then
+                graph_rgb <= multiasteroid_color;
             else
                 graph_rgb <= "000"; -- black
             end if;
