@@ -14,7 +14,7 @@ entity spaceship_graph is
         btnc : in std_logic;
         refresh_screen : in std_logic;
         collision : in std_logic;
-        number_of_lives : out unsigned(1 downto 0);
+        number_of_lives : inout unsigned(1 downto 0);
         spaceship_on : out std_logic;
         missile_x, missile_y : out unsigned(9 downto 0);
         launch_missile : out std_logic
