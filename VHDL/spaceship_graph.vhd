@@ -103,12 +103,13 @@ begin
     end process;
 
     -- launch missile if btnc is pressed
-    process (pixel_tick)
+    process (clk)
     begin
-        launch_missile <= '0';
-        if (rising_edge(clk)) then
-            if (btnc = '1' and (spaceship_y_top > 5)) then
+        if rising_edge(clk) then
+            if (btnc = '1') and (spaceship_y_top > 5) then
                 launch_missile <= '1';
+            else
+                launch_missile <= '0';
             end if;
         end if;
     end process;

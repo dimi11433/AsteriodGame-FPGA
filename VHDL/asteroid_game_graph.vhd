@@ -190,7 +190,7 @@ begin
         end if;
     end process;
 
-    process (video_on, alien_1_on, spaceship_on, asteroid_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on)
     begin
         if video_on = '1' then
             if info_section_on = '1' then
