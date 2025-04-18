@@ -24,7 +24,7 @@ architecture missile_arch of missile_graph is
 
     constant MISSILE_DY : integer := 1;
 
-    constant MAX_NUMBER_OF_MISSILES : integer := 480;
+    constant MAX_NUMBER_OF_MISSILES : integer := 20;
 
     type missile_rom is array (0 to 3) of std_logic_vector(3 downto 0);
     constant MISSILE_BITMAP : missile_rom := (
@@ -41,6 +41,8 @@ architecture missile_arch of missile_graph is
     signal missile_x_starts, missile_x_ends, missile_y_tops, missile_y_bottoms : missile_vector_prop;
 
     signal missile_y_tops_next : missile_vector_prop;
+
+    signal missile_shoot_available : unsigned(1 downto 0);
 
 begin
 
@@ -75,6 +77,17 @@ begin
         end loop;
     end process;
 
+    process (pixel_x, pixel_y)
+    begin
+        for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+            if missile_y_tops(i) = to_unsigned(0, 10) then
+                missile_active_array(i) <= '0';
+                missile_x_starts(i) <= to_unsigned(0, 10);
+                missile_y_tops(i) <= to_unsigned(0, 10);
+            end if;
+        end loop;
+    end process;
+
     -- move the missile
     process (clk, reset)
         variable fired : std_logic := '0';
@@ -84,9 +97,10 @@ begin
                 missile_x_starts(i) <= to_unsigned(0, 10);
                 missile_y_tops(i) <= to_unsigned(0, 10);
                 missile_active_array(i) <= '0';
+                missile_shoot_available <= "00";
             end loop;
         elsif rising_edge(clk) then
-            if launch_missile = '1' then
+            if launch_missile = '1' and missile_shoot_available = "00" then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if (missile_active_array(i) = '0') and (fired = '0') then
                         missile_x_starts(i) <= missile_x;
@@ -95,6 +109,9 @@ begin
                         fired := '1';
                     end if;
                 end loop;
+                if fired = '1' then
+                    missile_shoot_available <= "11";
+                end if;
             end if;
 
             if refresh_screen = '1' then
@@ -125,5 +142,14 @@ begin
                 missile_on <= '1';
             end if;
         end loop;
+    end process;
+
+    process (refresh_screen)
+    begin
+        if refresh_screen = '1' then
+            if (not (missile_shoot_available = "00")) then
+                missile_shoot_available <= missile_shoot_available - 1;
+            end if;
+        end if;
     end process;
 end missile_arch;
