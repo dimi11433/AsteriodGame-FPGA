@@ -56,8 +56,10 @@ architecture behavior of alien_1_graph is
     );
 
 begin
+    -- Determine bitmap bit for current pixel within alien sprite ROM
     alien_rom_bit <= ALIEN_ROM(to_integer(pixel_y(3 downto 0) - alien_y_top(3 downto 0)))(to_integer(pixel_x(4 downto 0) - alien_x_start(4 downto 0)));
 
+    -- Render alien pixel: check horizontal/vertical bounds, ROM bit, and active flag
     alien_on <= '1' when (pixel_x >= alien_x_start and pixel_x <= alien_x_end) and
         (pixel_y >= alien_y_top and pixel_y <= alien_y_bottom) and (alien_rom_bit = '1') and (active = '1') else
         '0';
@@ -66,9 +68,10 @@ begin
     alien_x_end <= alien_x_start + ALIEN_X_SIZE - 1;
     alien_y_bottom <= alien_y_top + ALIEN_Y_SIZE - 1;
 
-    -- move the alien
+    -- Alien horizontal movement logic: automatic wrap or manual control based on switches
     process (alien_x_start)
     begin
+        -- Automatic mode: move right by ALIEN_DX and wrap at right edge
         if automatic_or_manual = '0' then
             if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10) then
                 alien_x_start_next <= alien_x_start + ALIEN_DX;
@@ -76,9 +79,12 @@ begin
                 alien_x_start_next <= to_unsigned(0, 10);
             end if;
         else
+            -- Manual mode: respond to left/right button presses
             if (btnl = '1') and (alien_x_start > to_unsigned(0, 10)) then
+                -- Move left if left button pressed and not at left screen edge
                 alien_x_start_next <= alien_x_start - ALIEN_DX;
             elsif (btnr = '1') and (alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10)) then
+                -- Move right if right button pressed and not at right screen edge
                 alien_x_start_next <= alien_x_start + ALIEN_DX;
             else
                 alien_x_start_next <= alien_x_start;
@@ -87,15 +93,18 @@ begin
 
     end process;
 
-    -- at reset, the alien is at the center of the screen
+    -- Initialization and update: center alien on reset, handle refresh-based movement, and respawn on collision
     process (clk, reset)
     begin
+        -- Reset state: center alien horizontally and set top position, clear collision flag
         if (reset = '1') then
             alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_X_SIZE / 2, 10);
             alien_y_top <= to_unsigned(10, 10);
             collision_happened <= '0';
         elsif (rising_edge(clk)) then
+            -- On clock edge: check refresh tick then update position or respawn, and capture collision events
             if (refresh_screen = '1') then
+                -- On refresh tick: move to next position or respawn at center after collision
                 if (collision_happened = '1') then
                     alien_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ALIEN_X_SIZE / 2, 10);
                     collision_happened <= '0';
@@ -104,6 +113,7 @@ begin
                 end if;
             end if;
 
+            -- Capture collision event: mark for respawn on next refresh
             if (collision = '1') then
                 collision_happened <= '1';
             end if;

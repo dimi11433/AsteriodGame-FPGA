@@ -70,42 +70,50 @@ architecture spaceship_arch of spaceship_graph is
         "0000000000000000"
     );
 begin
-    spaceship_x_end <= spaceship_x_start + SPACESHIP_X_SIZE - 1;
-    spaceship_y_bottom <= spaceship_y_top + SPACESHIP_Y_SIZE - 1;
-
+    -- Determine spaceship ROM bit for current pixel within the spaceship sprite
     spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y(4 downto 0) - spaceship_y_top(4 downto 0)))(to_integer(pixel_x(3 downto 0) - spaceship_x_start(3 downto 0)));
 
+    -- Render spaceship pixel: check if current pixel is within spaceship bounds and ROM bit is set
     spaceship_on <= '1' when (pixel_x >= spaceship_x_start and pixel_x <= spaceship_x_end) and
         (pixel_y >= spaceship_y_top and pixel_y <= spaceship_y_bottom) and (spaceship_rom_bit = '1') else
         '0';
 
+    -- Compute missile spawn X coordinate relative to spaceship position
     missile_x <= spaceship_x_start + to_unsigned(6, 10);
+    
+    -- Compute missile spawn Y coordinate relative to spaceship position
     missile_y <= spaceship_y_top + to_unsigned(4, 10);
 
+    -- Calculate next lives count: decrement when a collision has occurred
     number_of_lives_next <= number_of_lives - 1 when (collision_happened = '1') else
         number_of_lives;
 
-    -- update the spaceship position based on button presses
+    -- Compute next spaceship position based on button inputs within screen boundaries
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
     begin
         spaceship_x_start_next <= spaceship_x_start;
         spaceship_y_top_next <= spaceship_y_top;
+        -- Horizontal movement: move left if left button pressed and not at screen edge
         if (btnl = '1') and (spaceship_x_start > 0) then
             spaceship_x_start_next <= spaceship_x_start - 1;
+        -- Horizontal movement: move right if right button pressed and not at screen edge
         elsif (btnr = '1') and (spaceship_x_end < SCREEN_WIDTH - 1) then
             spaceship_x_start_next <= spaceship_x_start + 1;
         end if;
+        -- Vertical movement: move up if up button pressed and not at top edge
         if (btnu = '1') and (spaceship_y_top > 0) then
             spaceship_y_top_next <= spaceship_y_top - 1;
+        -- Vertical movement: move down if down button pressed and not at bottom edge
         elsif (btnd = '1') and (spaceship_y_bottom < SCREEN_HEIGHT - 1) then
             spaceship_y_top_next <= spaceship_y_top + 1;
         end if;
     end process;
 
-    -- launch missile if btnc is pressed
+    -- Missile launch logic: assert launch_missile when shoot button pressed and spaceship is high enough
     process (clk)
     begin
         if rising_edge(clk) then
+            -- Trigger a one-clock-cycle launch when conditions are met
             if (btnc = '1') and (spaceship_y_top > 5) then
                 launch_missile <= '1';
             else
@@ -114,15 +122,18 @@ begin
         end if;
     end process;
 
-    -- at reset, set the spaceship position to the center of the screen
+    -- Initialization and update: handle reset, refresh, collision, and lives management
     process (clk, reset)
     begin
+        -- Reset state: center spaceship, clear collision flag, initialize lives
         if (reset = '1') then
             spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
             spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
             collision_happened <= '0';
             number_of_lives <= to_unsigned(3, 2);
+        -- On clock edge after reset: process screen refresh and collisions
         elsif (rising_edge(clk)) then
+            -- On refresh tick: update position or respawn spaceship and update lives
             if (refresh_screen = '1') then
                 if (collision_happened = '1') then
                     spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
@@ -136,6 +147,7 @@ begin
                     number_of_lives <= number_of_lives_next;
                 end if;   
             end if;
+            -- Capture collision event to trigger position reset on next refresh
             if (collision = '1') then
                 collision_happened <= '1';
             end if;

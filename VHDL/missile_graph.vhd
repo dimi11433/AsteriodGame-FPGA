@@ -50,6 +50,7 @@ architecture missile_arch of missile_graph is
 
 begin
 
+    -- Sample missile bitmap ROM bit for each active missile based on current pixel offset
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
@@ -57,6 +58,7 @@ begin
         end loop;
     end process;
 
+    -- Compute sprite boundary coordinates (start + size) for each missile
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
@@ -65,6 +67,7 @@ begin
         end loop;
     end process;
 
+    -- Determine if each missile pixel should be rendered: check bounding box, bitmap bit, and active flag
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
@@ -74,6 +77,7 @@ begin
         end loop;
     end process;
 
+    -- Calculate next vertical positions for missiles (move upward by MISSILE_DY)
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
@@ -81,7 +85,7 @@ begin
         end loop;
     end process;
 
-    -- move the missile
+    -- Missile movement and launch logic: handle firing one-shot, movement, and deactivation at top
     process (clk, reset)
       variable fired_var : std_logic := '0';
     begin
@@ -131,6 +135,7 @@ begin
         end if;
     end process;
 
+    -- Aggregate individual missile on-flags to drive the single output signal
     process (pixel_x, pixel_y)
     begin
         missile_on <= '0';
@@ -141,6 +146,7 @@ begin
         end loop;
     end process;
 
+    -- Manage firing cooldown: reload and decrement missile_shoot_available counter each frame
     process (clk, reset, refresh_screen)
     begin
         if reset = '1' then

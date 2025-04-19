@@ -39,20 +39,25 @@ begin
     text_x_start <= to_unsigned(10, 10);
     text_y_bottom <= to_unsigned(18, 10);
     text_x_end <= to_unsigned(18, 10);
+    -- Render left bar of info section: vertical bar at defined X and full Y range
     left_bar_on <= '1' when (pixel_x >= INFO_SECTION_LEFT and pixel_x <= INFO_SECTION_RIGHT) and
          (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';
 
+    -- Render bottom bar of info section: horizontal bar at defined Y and full X range
     bottom_bar_on <= '1' when (pixel_x >= to_unsigned(0, 10) and pixel_x <= INFO_SECTION_RIGHT) and
          (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
          '0';
 
+    -- Sample character ROM bit for current pixel within the text bounding box
     text_rom_bit <= character_rom(to_integer(pixel_y(2 downto 0) - text_y_top(2 downto 0)))(to_integer(pixel_x(2 downto 0) - text_x_start(2 downto 0)));
 
+    -- Render text pixel: check bounding box and ROM bit to display character
     text_on <= '1' when (pixel_x >= text_x_start and pixel_x <= text_x_end) and
         (pixel_y >= text_y_top and pixel_y <= text_y_bottom) and (text_rom_bit = '1') else
         '0';
 
+    -- Combine bars and text signals to drive the overall info section visibility
     info_section_on <= bottom_bar_on or left_bar_on or text_on;
 
     get_character_rom_unit : entity work.get_character_rom
@@ -62,11 +67,14 @@ begin
         );
 
     -- get the character address from the number of lives
+    -- Update character address each frame based on number of lives
     process(clk, reset)
     begin
+        -- On reset: clear fetch_character_addr to default
         if reset = '1' then
             fetch_character_addr <= (others => '0');
         elsif rising_edge(clk) then
+            -- On refresh tick: load new character address representing current number_of_lives
             if refresh_screen = '1' then
                 fetch_character_addr <= std_logic_vector(to_unsigned(to_integer(number_of_lives), 8));
             end if;

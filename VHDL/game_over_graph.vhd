@@ -53,34 +53,35 @@ architecture game_over_arch of game_over_graph is
     signal char_y       : integer range 0 to CHAR_HEIGHT-1;
     signal current_bit  : std_logic;
 begin
-    -- Compute local coordinates relative to the top-left of the text block
+    -- Compute coordinates relative to the top-left of the centered text block
     local_x <= to_integer(pixel_x) - START_X;
-    local_y <= to_integer(pixel_y) - START_Y;
 
-    -- Determine if pixel lies within the centered text area when game_over is asserted
+    -- Determine if the current pixel is within the game over text area when game_over is active
     in_text_area <= '1' when (game_over = '1' and
                               to_integer(pixel_x) >= START_X and to_integer(pixel_x) < START_X + TEXT_WIDTH and
                               to_integer(pixel_y) >= START_Y and to_integer(pixel_y) < START_Y + TEXT_HEIGHT)
                     else '0';
 
-    -- Determine which character in the string and which pixel inside that character
+    -- Calculate which character in the message this pixel falls into
     char_pos <= local_x / CHAR_WIDTH;
+    -- Calculate the horizontal offset (column) of the pixel within the character bitmap
     char_x   <= local_x mod CHAR_WIDTH;
+    -- Calculate the vertical offset (row) of the pixel within the character bitmap
     char_y   <= local_y;  -- row within character
 
-    -- Lookup character bitmap index
+    -- Select the ROM index for the current character or zero when outside text area
     char_index <= TEXT_ARRAY(char_pos) when in_text_area = '1' else (others => '0');
 
-    -- Instantiate the character ROM to fetch the 8x8 bitmap
+    -- Fetch the 8x8 bitmap data for the selected character index
     char_rom_inst : get_character_rom
         port map (
             char_addr => char_index,
             char_data => char_data
         );
 
-    -- Extract the specific bit for this pixel (MSB is leftmost)
+    -- Extract the specific bit for this pixel from the character bitmap
     current_bit <= char_data(char_y)(char_x);
 
-    -- Drive text_on high only when inside text area and the bitmap bit is '1'
+    -- Output text_on high only when inside the text area and the bitmap bit is set
     text_on <= '1' when (in_text_area = '1' and current_bit = '1') else '0';
 end architecture game_over_arch;

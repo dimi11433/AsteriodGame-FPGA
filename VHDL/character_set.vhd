@@ -15,6 +15,7 @@ architecture rom of get_character_rom is
     -- Define a type for the complete font ROM: 26 letters + 10 digits = 36 characters.
     type font_rom_type is array (0 to 35) of char_bitmap;
 
+    -- FONT_ROM: array mapping character indices (0-35) to 8x8 bitmap patterns for '0'-'9' and 'a'-'z'
     constant FONT_ROM : font_rom_type := (
         -- '0'
         0 => (
@@ -413,15 +414,21 @@ architecture rom of get_character_rom is
         "00000000"
         )
     );
+    -- Convert 8-bit char_addr to integer index for ROM lookup
     signal index : integer;
 begin
+    -- Compute ROM index from input address vector
     index <= to_integer(unsigned(char_addr));
 
     -- Process to index into FONT_ROM using char_addr
+    -- ROM access process: select bitmap based on computed index
     process (index)
     begin
+        -- Range check: if index is within valid ROM entries
         if index < 36 and index >= 0 then
+            -- Assign corresponding character bitmap from ROM
             char_data <= FONT_ROM(index);
+        -- If index is out of range, output blank bitmap (all zeros)
         else
             char_data <= (others => (others => '0'));
         end if;
