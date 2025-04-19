@@ -43,7 +43,8 @@ architecture missile_arch of missile_graph is
     signal missile_y_tops_next : missile_vector_prop;
 
     signal missile_shoot_available : unsigned(1 downto 0);
-
+    -- register to detect rising edge of launch_missile
+    signal launch_missile_reg : std_logic := '0';
 
 begin
 
@@ -89,9 +90,11 @@ begin
                 missile_active_array(i) <= '0';
             end loop;
         elsif rising_edge(clk) then
+            -- update previous state of launch_missile
+            launch_missile_reg <= launch_missile;
             -- clear launch one-shot flag each cycle
             fired_var := '0';
-            if launch_missile = '1' and missile_shoot_available = "00" then
+            if launch_missile = '1' and launch_missile_reg = '0' and missile_shoot_available = "00" then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if (missile_active_array(i) = '0') and (fired_var = '0') then
                         missile_x_starts(i) <= missile_x;
