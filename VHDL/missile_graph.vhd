@@ -44,7 +44,6 @@ architecture missile_arch of missile_graph is
 
     signal missile_shoot_available : unsigned(1 downto 0);
 
-    signal fired : std_logic;
 
 begin
 
@@ -81,24 +80,24 @@ begin
 
     -- move the missile
     process (clk, reset)
+      variable fired_var : std_logic := '0';
     begin
         if reset = '1' then
             for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                 missile_x_starts(i) <= to_unsigned(0, 10);
                 missile_y_tops(i) <= to_unsigned(0, 10);
                 missile_active_array(i) <= '0';
-                fired <= '0';
             end loop;
         elsif rising_edge(clk) then
             -- clear launch one-shot flag each cycle
-            fired <= '0';
+            fired_var := '0';
             if launch_missile = '1' and missile_shoot_available = "00" then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-                    if (missile_active_array(i) = '0') and (fired = '0') then
+                    if (missile_active_array(i) = '0') and (fired_var = '0') then
                         missile_x_starts(i) <= missile_x;
                         missile_y_tops(i) <= missile_y;
                         missile_active_array(i) <= '1';
-                        fired <= '1';
+                        fired_var := '1';
                     end if;
                 end loop;
             end if;
