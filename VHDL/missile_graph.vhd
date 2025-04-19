@@ -90,6 +90,8 @@ begin
                 fired <= '0';
             end loop;
         elsif rising_edge(clk) then
+            -- clear launch one-shot flag each cycle
+            fired <= '0';
             if launch_missile = '1' and missile_shoot_available = "00" then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if (missile_active_array(i) = '0') and (fired = '0') then
@@ -99,9 +101,6 @@ begin
                         fired <= '1';
                     end if;
                 end loop;
-                if fired = '1' then
-                    fired <= '0';
-                end if;
             end if;
             if refresh_screen = '1' then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
