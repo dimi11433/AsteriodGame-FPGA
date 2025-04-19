@@ -6,7 +6,7 @@ entity asteroids_top is
         btnl, btnr : in std_logic; -- Left/right movement controls for the spaceship
         btnu, btnd : in std_logic; -- Up/down movement controls for the spaceship
         btnc : in std_logic; -- Controls shooting missiles
-        sw15, sw14 : in std_logic; -- Switches for controlling the alien
+        sw15, sw14, sw13 : in std_logic; -- Switches for controlling the alien
         sw1 : in std_logic; -- Enables manual alien control; off = automatic
         hsync, vsync, comp_sync : out std_logic; -- VGA horizontal, vertical, and composite sync outputs
         rgb : out std_logic_vector(2 downto 0) -- RGB color output to VGA

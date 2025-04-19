@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.Types.all;
 
-entity missile_graph is
+entity alien_missile_graph is
     port (
         clk, reset : in std_logic;
         pixel_tick : in std_logic;
@@ -13,12 +13,13 @@ entity missile_graph is
         missile_x : in unsigned(9 downto 0);
         missile_y : in unsigned(9 downto 0);
         launch_missile : in std_logic;
-        alien_on : in std_logic;
-        asteroid_on : in std_logic;
+        spaceship_on : in std_logic;
+        spaceship_missile_on : in std_logic;
         missile_on : out std_logic
     );
-end missile_graph;
-architecture missile_arch of missile_graph is
+end alien_missile_graph;
+
+architecture missile_arch of alien_missile_graph is
     constant SCREEN_WIDTH : integer := 640;
     constant SCREEN_HEIGHT : integer := 480;
 
@@ -30,10 +31,10 @@ architecture missile_arch of missile_graph is
 
     type missile_rom is array (0 to 3) of std_logic_vector(3 downto 0);
     constant MISSILE_BITMAP : missile_rom := (
-        "0100", -- Row 0
+        "1110", -- Row 0
         "1110", -- Row 1
         "1110", -- Row 2
-        "1110" -- Row 3
+        "0100" -- Row 3
     );
 
     type missile_single_bit_prop is array (0 to MAX_NUMBER_OF_MISSILES - 1) of std_logic;
@@ -45,8 +46,6 @@ architecture missile_arch of missile_graph is
     signal missile_y_tops_next : missile_vector_prop;
 
     signal missile_shoot_available : unsigned(1 downto 0);
-    -- register to detect rising edge of launch_missile
-    signal launch_missile_reg : std_logic := '0';
 
 begin
 
@@ -81,7 +80,7 @@ begin
     process (pixel_x, pixel_y)
     begin
         for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-            missile_y_tops_next(i) <= missile_y_tops(i) - to_unsigned(MISSILE_DY, 10);
+            missile_y_tops_next(i) <= missile_y_tops(i) + to_unsigned(MISSILE_DY, 10);
         end loop;
     end process;
 
@@ -96,11 +95,9 @@ begin
                 missile_active_array(i) <= '0';
             end loop;
         elsif rising_edge(clk) then
-            -- update previous state of launch_missile
-            launch_missile_reg <= launch_missile;
             -- clear launch one-shot flag each cycle
             fired_var := '0';
-            if launch_missile = '1' and launch_missile_reg = '0' and missile_shoot_available = "00" then
+            if launch_missile = '1' and missile_shoot_available = "00" then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if (missile_active_array(i) = '0') and (fired_var = '0') then
                         missile_x_starts(i) <= missile_x;
@@ -113,7 +110,7 @@ begin
             if refresh_screen = '1' then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if missile_active_array(i) = '1' then
-                        if missile_y_tops(i) = to_unsigned(0, 10) then
+                        if missile_y_tops(i) > to_unsigned(SCREEN_HEIGHT - MISSILE_SIZE, 10) then
                             missile_active_array(i) <= '0';
                             missile_x_starts(i) <= to_unsigned(0, 10);
                             missile_y_tops(i) <= to_unsigned(0, 10);
@@ -126,7 +123,7 @@ begin
 
             -- check for collision with alien or asteroid
             for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-                if (missile_active_array(i) = '1') and (alien_on = '1' or asteroid_on = '1') and (missile_on_array(i) = '1') then
+                if (missile_active_array(i) = '1') and (spaceship_on = '1' or spaceship_missile_on = '1') and (missile_on_array(i) = '1') then
                     missile_active_array(i) <= '0';
                     missile_x_starts(i) <= to_unsigned(0, 10);
                     missile_y_tops(i) <= to_unsigned(0, 10);

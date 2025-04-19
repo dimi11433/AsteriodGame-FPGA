@@ -14,7 +14,7 @@ entity asteroid_graph is
         btnl, btnr : in std_logic; 
         btnu, btnd : in std_logic; 
         btnc : in std_logic; 
-        sw15, sw14 : in std_logic; 
+        sw15, sw14, sw13 : in std_logic; 
         sw1 : in std_logic; 
         graph_rgb : out std_logic_vector(2 downto 0) 
     );
@@ -40,7 +40,8 @@ architecture asteroid_arch of asteroid_graph is
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0); 
 
     -- On signal for each object to determine if it should be rendered
-    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on, asteroids_on, gave_over_text_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on : std_logic;
+    signal info_section_on, missile_on, asteroids_on, gave_over_text_on, alien_missile_on : std_logic;
 
     -- Color signals for each object 
     signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color, multiasteroid_color : std_logic_vector(2 downto 0); 
@@ -62,6 +63,10 @@ architecture asteroid_arch of asteroid_graph is
     -- Missile launch signal and coordinates
     signal launch_missile : std_logic; 
     signal missile_x, missile_y : unsigned(9 downto 0); 
+
+    -- Alien Missile launch signal and coordinates
+    signal launch_alien_missile : std_logic; 
+    signal alien_missile_x, alien_missile_y : unsigned(9 downto 0); 
 
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
     constant ASTEROID_ROM : rom_type_8 := (
@@ -118,11 +123,15 @@ begin
             pixel_y => pix_y,
             btnl => sw15,
             btnr => sw14,
+            btnc => sw13,
             automatic_or_manual => sw1,
             refresh_screen => refresh_screen,
             active => alien_1_active,
             alien_on => alien_1_on,
-            collision => spaceship_collision_with_alien or missile_collision_with_alien
+            collision => spaceship_collision_with_alien or missile_collision_with_alien,
+            alien_missile_x => alien_missile_x,
+            alien_missile_y => alien_missile_y,
+            launch_missile => launch_alien_missile
         );
 
     info_section_graph_unit : entity work.info_section_graph
@@ -137,7 +146,7 @@ begin
             info_section_on => info_section_on
         );
 
-    missile_graph_unit : entity work.missile_graph
+    spaceship_missile_graph_unit : entity work.spaceship_missile_graph
         port map(
             clk => clk,
             reset => reset,
@@ -151,6 +160,22 @@ begin
             alien_on => alien_1_on,
             asteroid_on => asteroid_on,
             missile_on => missile_on
+        );
+
+    alien_missile_graph_unit : entity work.alien_missile_graph
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_tick => pixel_tick,
+            pixel_x => pix_x,
+            pixel_y => pix_y,
+            refresh_screen => refresh_screen,
+            missile_x =>  alien_missile_x,
+            missile_y => alien_missile_y,
+            launch_missile => launch_alien_missile,
+            spaceship_on => spaceship_on,
+            spaceship_missile_on => missile_on,
+            missile_on => alien_missile_on
         );
 
     game_over_graph_unit : entity work.game_over_graph
@@ -172,7 +197,7 @@ begin
     asteroid_color <= "111"; 
     missile_color <= "111"; 
     info_section_color <= "111"; 
-    multiasteroid_color <= "000"; 
+    multiasteroid_color <= "111"; 
 
     -- Determine the bitmap bit for the current pixel within the asteroid sprite
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y(2 downto 0) - asteroid_y_top(2 downto 0)))(to_integer(pix_x(2 downto 0) - asteroid_x_start(2 downto 0))); 
@@ -249,7 +274,7 @@ begin
     end process;
 
     -- Rendering priority: choose which sprite's color outputs for each pixel
-    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on, alien_missile_on)
     begin
         if video_on = '1' then
             if game_over = '1' then
@@ -263,6 +288,8 @@ begin
                     graph_rgb <= info_section_color; 
                 elsif missile_on = '1' then
                     graph_rgb <= missile_color; 
+                elsif alien_missile_on = '1' then
+                    graph_rgb <= missile_color;
                 elsif alien_1_on = '1' then
                     graph_rgb <= alien_color; 
                 elsif spaceship_on = '1' then
