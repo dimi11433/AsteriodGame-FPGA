@@ -33,7 +33,7 @@ architecture asteroid_arch of asteroid_graph is
     -- next start positions for the objects
     signal asteroid_x_start_next, asteroid_y_top_next : unsigned(9 downto 0);
 
-    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on, asteroids_on : std_logic;
+    signal asteroid_on, alien_1_on, spaceship_on, info_section_on, missile_on, asteroids_on, gave_over_text_on : std_logic;
 
     signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color, multiasteroid_color : std_logic_vector(2 downto 0);
 
@@ -50,6 +50,8 @@ architecture asteroid_arch of asteroid_graph is
     signal launch_missile : std_logic;
 
     signal missile_x, missile_y : unsigned(9 downto 0);
+
+    signal game_over : std_logic;
 
     -- asteroid image
     type rom_type_8 is array(0 to 7) of std_logic_vector(0 to 7);
@@ -143,6 +145,17 @@ begin
             missile_on => missile_on
         );
 
+    -- instantiate the gave over graph
+    game_over_graph_unit : entity work.game_over_graph
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_x => pix_x,
+            pixel_y => pix_y,
+            game_over => game_over,
+            text_on => gave_over_text_on
+        );
+
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
@@ -206,23 +219,43 @@ begin
         end if;
     end process;
 
+    -- gave over logic
+    process (clk, reset)
+    begin
+        if reset = '1' then
+            game_over <= '0';
+        elsif rising_edge(clk) then
+            if number_of_lives = "00" then
+                game_over <= '1';
+            end if;
+        end if;
+    end process;
+
     process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on)
     begin
         if video_on = '1' then
-            if info_section_on = '1' then
-                graph_rgb <= info_section_color;
-            elsif missile_on = '1' then
-                graph_rgb <= missile_color;
-            elsif alien_1_on = '1' then
-                graph_rgb <= alien_color;
-            elsif spaceship_on = '1' then
-                graph_rgb <= spaceship_color;
-            elsif asteroid_on = '1' then
-                graph_rgb <= asteroid_color;
-            elsif asteroids_on = '1' then
-                graph_rgb <= multiasteroid_color;
-            else
-                graph_rgb <= "000"; -- black
+            if game_over = '1' then
+                if gave_over_text_on = '1' then
+                    graph_rgb <= "111"; -- white
+                else
+                    graph_rgb <= "000"; -- black
+                end if;
+            elsif
+                if info_section_on = '1' then
+                    graph_rgb <= info_section_color;
+                elsif missile_on = '1' then
+                    graph_rgb <= missile_color;
+                elsif alien_1_on = '1' then
+                    graph_rgb <= alien_color;
+                elsif spaceship_on = '1' then
+                    graph_rgb <= spaceship_color;
+                elsif asteroid_on = '1' then
+                    graph_rgb <= asteroid_color;
+                elsif asteroids_on = '1' then
+                    graph_rgb <= multiasteroid_color;
+                else
+                    graph_rgb <= "000"; -- black
+                end if;
             end if;
         else
             graph_rgb <= "000"; -- black

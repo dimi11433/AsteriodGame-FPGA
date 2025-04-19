@@ -132,7 +132,9 @@ begin
                     spaceship_x_start <= spaceship_x_start_next;
                     spaceship_y_top <= spaceship_y_top_next;
                 end if;
-                number_of_lives <= number_of_lives_next;
+                if not (number_of_lives = "00") then
+                    number_of_lives <= number_of_lives_next;
+                end if;   
             end if;
             if (collision = '1') then
                 collision_happened <= '1';
