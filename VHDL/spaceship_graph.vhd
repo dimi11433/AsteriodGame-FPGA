@@ -70,6 +70,10 @@ architecture spaceship_arch of spaceship_graph is
         "0000000000000000"
     );
 begin
+
+    spaceship_x_end <= spaceship_x_start + SPACESHIP_X_SIZE - 1;
+    spaceship_y_bottom <= spaceship_y_top + SPACESHIP_Y_SIZE - 1;
+    
     -- Determine spaceship ROM bit for current pixel within the spaceship sprite
     spaceship_rom_bit <= SPACESHIP_ROM(to_integer(pixel_y(4 downto 0) - spaceship_y_top(4 downto 0)))(to_integer(pixel_x(3 downto 0) - spaceship_x_start(3 downto 0)));
 
@@ -80,7 +84,7 @@ begin
 
     -- Compute missile spawn X coordinate relative to spaceship position
     missile_x <= spaceship_x_start + to_unsigned(6, 10);
-    
+
     -- Compute missile spawn Y coordinate relative to spaceship position
     missile_y <= spaceship_y_top + to_unsigned(4, 10);
 
