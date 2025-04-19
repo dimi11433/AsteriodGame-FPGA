@@ -36,9 +36,9 @@ architecture behavior of alien_1_graph is
 
     signal collision_happened : std_logic;
 
-    type SHOOT_STATE is (SHOOT_1, SHOOT_2, SHOOT_3, IDLE_1, IDLE_2, IDLE_3, IDLE_4, IDLE_5, IDLE_6, IDLE_7, IDLE_8);
-    signal shoot_state       : SHOOT_STATE := SHOOT_1;
-    signal shoot_state_next  : SHOOT_STATE;
+    type T_SHOOT_STATE is (SHOOT_1, SHOOT_2, SHOOT_3, IDLE_1, IDLE_2, IDLE_3, IDLE_4, IDLE_5, IDLE_6, IDLE_7, IDLE_8);
+    signal shoot_state       : T_SHOOT_STATE := SHOOT_1;
+    signal shoot_state_next  : T_SHOOT_STATE;
 
     -- alien image
     type rom_type_16 is array(0 to 15) of std_logic_vector(0 to 23);
@@ -132,7 +132,7 @@ begin
 
     -- Alien missile launch FSM using shoot_state
     -- Combinational next-state and output logic
-    process(clk, reset, shoot_state)
+    process(shoot_state)
     begin
         case shoot_state is
             when SHOOT_1 =>
