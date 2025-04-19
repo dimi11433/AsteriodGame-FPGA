@@ -107,13 +107,12 @@ begin
                         missile_y_tops(i) <= missile_y;
                         missile_active_array(i) <= '1';
                         fired := '1';
+                        missile_shoot_available <= "11";
                     end if;
                 end loop;
-                if fired = '1' then
-                    missile_shoot_available <= "11";
-                end if;
+            elsif (not (missile_shoot_available = "00")) and (refresh_screen = '1') then
+                missile_shoot_available <= missile_shoot_available - 1;
             end if;
-
             if refresh_screen = '1' then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
                     if missile_active_array(i) = '1' then
