@@ -12,6 +12,8 @@ entity asteroid_graph is
         btnl, btnr : in std_logic;
         btnu, btnd : in std_logic;
         btnc : in std_logic;
+        sw15, sw14 : in std_logic;
+        sw1 : in std_logic;
         graph_rgb : out std_logic_vector(2 downto 0)
     );
 end asteroid_graph;
@@ -42,6 +44,8 @@ architecture asteroid_arch of asteroid_graph is
     signal alien_1_active, alien_2_active : std_logic;
 
     signal spaceship_collision_with_asteroid, spaceship_collision_with_alien : std_logic;
+
+    signal missile_collision_with_alien : std_logic;
 
     signal spaceship_collision_with_asteroid_happened : std_logic;
 
@@ -110,10 +114,13 @@ begin
             reset => reset,
             pixel_x => pix_x,
             pixel_y => pix_y,
+            btnl => sw15,
+            btnr => sw14,
+            automatic_or_manual => sw1,
             refresh_screen => refresh_screen,
             active => alien_1_active,
             alien_on => alien_1_on,
-            collision => spaceship_collision_with_alien
+            collision => spaceship_collision_with_alien or missile_collision_with_alien
         );
 
     -- instantiate the info section graph
@@ -185,6 +192,9 @@ begin
     spaceship_collision_with_alien <= '1' when (alien_1_on = '1' and spaceship_on = '1') else
         '0';
 
+    missile_collision_with_alien <= '1' when (missile_on = '1' and alien_1_on = '1') else
+        '0';
+
     alien_1_active <= '1'; 
 
     -- move the asteroid
@@ -231,7 +241,7 @@ begin
         end if;
     end process;
 
-    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on)
     begin
         if video_on = '1' then
             if game_over = '1' then

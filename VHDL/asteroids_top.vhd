@@ -6,6 +6,8 @@ entity asteroids_top is
         btnl, btnr : in std_logic;
         btnu, btnd : in std_logic;
         btnc : in std_logic;
+        sw15, sw14 : in std_logic;
+        sw1 : in std_logic;
         hsync, vsync, comp_sync : out std_logic;
         rgb : out std_logic_vector(2 downto 0)
     );
@@ -42,6 +44,9 @@ begin
             btnu => btnu,
             btnd => btnd,
             btnc => btnc,
+            sw15 => sw15,
+            sw14 => sw14,
+            sw1 => sw1,
             graph_rgb => rgb_next);
     -- rgb buffer, graph_rgb is routed to the ouput through
     -- an output buffer -- loaded when pixel_tick = ’1’.

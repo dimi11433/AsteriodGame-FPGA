@@ -7,12 +7,11 @@ entity alien_1_graph is
         clk, reset : in std_logic;
         pixel_x : in unsigned(9 downto 0);
         pixel_y : in unsigned(9 downto 0);
-        -- btnl, btnr : in std_logic;
-        -- btnu, btnd : in std_logic;
-        -- btnc : in std_logic;
+        btnl, btnr : in std_logic;
         refresh_screen : in std_logic;
         collision : in std_logic;
         active : in std_logic;
+        automatic_or_manual : in std_logic;
         alien_on : out std_logic
     );
 end entity alien_1_graph;
@@ -70,10 +69,20 @@ begin
     -- move the alien
     process (alien_x_start)
     begin
-        if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10) then
-            alien_x_start_next <= alien_x_start + ALIEN_DX;
+        if automatic_or_manual = '0' then
+            if alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10) then
+                alien_x_start_next <= alien_x_start + ALIEN_DX;
+            else
+                alien_x_start_next <= to_unsigned(0, 10);
+            end if;
         else
-            alien_x_start_next <= to_unsigned(0, 10);
+            if (btnl = '1') and (alien_x_start > to_unsigned(0, 10)) then
+                alien_x_start_next <= alien_x_start - ALIEN_DX;
+            elsif (btnr = '1') and (alien_x_start < to_unsigned(SCREEN_WIDTH - ALIEN_X_SIZE, 10)) then
+                alien_x_start_next <= alien_x_start + ALIEN_DX;
+            else
+                alien_x_start_next <= alien_x_start;
+            end if;
         end if;
 
     end process;
