@@ -240,7 +240,7 @@ begin
                 else
                     graph_rgb <= "000"; -- black
                 end if;
-            elsif
+            else
                 if info_section_on = '1' then
                     graph_rgb <= info_section_color;
                 elsif missile_on = '1' then
