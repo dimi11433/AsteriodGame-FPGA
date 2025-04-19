@@ -30,10 +30,10 @@ architecture missile_arch of missile_graph is
 
     type missile_rom is array (0 to 3) of std_logic_vector(3 downto 0);
     constant MISSILE_BITMAP : missile_rom := (
-        "0110", -- Row 0
-        "1111", -- Row 1
-        "1111", -- Row 2
-        "0110" -- Row 3
+        "0100", -- Row 0
+        "1110", -- Row 1
+        "1110", -- Row 2
+        "1110" -- Row 3
     );
 
     type missile_single_bit_prop is array (0 to MAX_NUMBER_OF_MISSILES - 1) of std_logic;
