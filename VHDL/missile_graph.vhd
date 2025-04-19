@@ -77,17 +77,6 @@ begin
         end loop;
     end process;
 
-    process (pixel_x, pixel_y)
-    begin
-        for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
-            if missile_y_tops(i) = to_unsigned(0, 10) then
-                missile_active_array(i) <= '0';
-                missile_x_starts(i) <= to_unsigned(0, 10);
-                missile_y_tops(i) <= to_unsigned(0, 10);
-            end if;
-        end loop;
-    end process;
-
     -- move the missile
     process (clk, reset)
         variable fired : std_logic := '0';
