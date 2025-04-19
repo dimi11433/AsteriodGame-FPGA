@@ -46,6 +46,7 @@ begin
             btnc => btnc,
             sw15 => sw15,
             sw14 => sw14,
+            sw13 => sw13,
             sw1 => sw1,
             graph_rgb => rgb_next);
     -- rgb buffer, graph_rgb is routed to the ouput through
