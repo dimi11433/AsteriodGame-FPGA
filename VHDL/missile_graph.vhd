@@ -97,7 +97,6 @@ begin
                 missile_x_starts(i) <= to_unsigned(0, 10);
                 missile_y_tops(i) <= to_unsigned(0, 10);
                 missile_active_array(i) <= '0';
-                missile_shoot_available <= "00";
             end loop;
         elsif rising_edge(clk) then
             if launch_missile = '1' and missile_shoot_available = "00" then
@@ -107,11 +106,8 @@ begin
                         missile_y_tops(i) <= missile_y;
                         missile_active_array(i) <= '1';
                         fired := '1';
-                        missile_shoot_available <= "11";
                     end if;
                 end loop;
-            elsif (not (missile_shoot_available = "00")) and (refresh_screen = '1') then
-                missile_shoot_available <= missile_shoot_available - 1;
             end if;
             if refresh_screen = '1' then
                 for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
@@ -141,5 +137,22 @@ begin
                 missile_on <= '1';
             end if;
         end loop;
+    end process;
+
+    process (clk, reset, refresh_screen)
+    begin
+        if reset = '1' then
+            missile_shoot_available <= "00";
+        elsif rising_edge(clk) then
+            if refresh_screen = '1' then
+                if launch_missile = '1' then
+                    missile_shoot_available <= "11";
+                else
+                    if missile_shoot_available > 0 then
+                        missile_shoot_available <= missile_shoot_available - 1;
+                    end if;
+                end if;
+            end if;
+        end if;
     end process;
 end missile_arch;
