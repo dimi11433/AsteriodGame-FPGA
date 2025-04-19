@@ -8,7 +8,7 @@ entity game_over_graph is
         clk, reset : in std_logic;
         pixel_x, pixel_y : in unsigned(9 downto 0);
         game_over : in std_logic;
-        text_on : out std_logic;
+        text_on : out std_logic
     );
 end game_over_graph;
 
