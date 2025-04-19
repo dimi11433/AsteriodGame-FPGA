@@ -44,7 +44,7 @@ architecture game_over_arch of game_over_graph is
     end component;
 
     signal char_data    : char_bitmap;
-    signal char_index   : std_logic_vector(0 to 7);
+    signal char_index   : std_logic_vector(7 downto 0);
     signal local_x      : integer range 0 to SCREEN_WIDTH;
     signal local_y      : integer range 0 to SCREEN_HEIGHT;
     signal in_text_area : std_logic;
@@ -79,7 +79,7 @@ begin
         );
 
     -- Extract the specific bit for this pixel (MSB is leftmost)
-    current_bit <= char_data(char_y)(7 - char_x);
+    current_bit <= char_data(char_y)(char_x);
 
     -- Drive text_on high only when inside text area and the bitmap bit is '1'
     text_on <= '1' when (in_text_area = '1' and current_bit = '1') else '0';
