@@ -119,10 +119,6 @@ begin
                         else
                             missile_y_tops(i) <= missile_y_tops_next(i);
                         end if;
-                    else
-                        missile_x_starts(i) <= to_unsigned(0, 10);
-                        missile_y_tops(i) <= to_unsigned(0, 10);
-                        missile_active_array(i) <= '0';
                     end if;
                 end loop;
             end if;
