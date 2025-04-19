@@ -41,9 +41,9 @@ architecture asteroid_arch of asteroid_graph is
 
     signal alien_1_active, alien_2_active : std_logic;
 
-    signal collision_with_asteroid, collision_with_alien : std_logic;
+    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien : std_logic;
 
-    signal collision_with_asteroid_happened : std_logic;
+    signal spaceship_collision_with_asteroid_happened : std_logic;
 
     signal number_of_lives : unsigned(1 downto 0);
 
@@ -93,7 +93,7 @@ begin
             btnd => btnd,
             btnc => btnc,
             refresh_screen => refresh_screen,
-            collision => collision_with_asteroid or collision_with_alien,
+            collision => spaceship_collision_with_asteroid or spaceship_collision_with_alien,
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             missile_x => missile_x,
@@ -111,7 +111,7 @@ begin
             refresh_screen => refresh_screen,
             active => alien_1_active,
             alien_on => alien_1_on,
-            collision => collision_with_alien
+            collision => spaceship_collision_with_alien
         );
 
     -- instantiate the info section graph
@@ -122,7 +122,7 @@ begin
             pixel_x => pix_x,
             pixel_y => pix_y,
             refresh_screen => refresh_screen,
-            collision => collision_with_asteroid or collision_with_alien,
+            collision => spaceship_collision_with_asteroid or spaceship_collision_with_alien,
             number_of_lives => number_of_lives,
             info_section_on => info_section_on
         );
@@ -138,6 +138,8 @@ begin
             missile_x =>  missile_x,
             missile_y => missile_y,
             launch_missile => launch_missile,
+            alien_on => alien_1_on,
+            asteroid_on => asteroid_on,
             missile_on => missile_on
         );
 
@@ -148,7 +150,7 @@ begin
     spaceship_color <= "010"; -- green
     asteroid_color <= "111"; -- white/greyish
     missile_color <= "111"; -- black
-    info_section_color <= "111"; -- black
+    info_section_color <= "111"; -- white
     multiasteroid_color <= "000"; --black
 
     asteroid_rom_bit <= ASTEROID_ROM(to_integer(pix_y(2 downto 0) - asteroid_y_top(2 downto 0)))(to_integer(pix_x(2 downto 0) - asteroid_x_start(2 downto 0)));
@@ -164,10 +166,10 @@ begin
         pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
         '0';
 
-    collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on = '1') else
+    spaceship_collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on = '1') else
         '0';
 
-    collision_with_alien <= '1' when (alien_1_on = '1' and spaceship_on = '1') else
+    spaceship_collision_with_alien <= '1' when (alien_1_on = '1' and spaceship_on = '1') else
         '0';
 
     alien_1_active <= '1'; 
@@ -190,16 +192,16 @@ begin
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
-                if collision_with_asteroid_happened = '1' then
+                if spaceship_collision_with_asteroid_happened = '1' then
                     asteroid_y_top <= to_unsigned(0, 10);
-                    collision_with_asteroid_happened <= '0';
+                    spaceship_collision_with_asteroid_happened <= '0';
                 else
                     asteroid_y_top <= asteroid_y_top_next;
                 end if;
             end if;
 
-            if collision_with_asteroid = '1' then
-                collision_with_asteroid_happened <= '1';
+            if spaceship_collision_with_asteroid = '1' then
+                spaceship_collision_with_asteroid_happened <= '1';
             end if;
         end if;
     end process;

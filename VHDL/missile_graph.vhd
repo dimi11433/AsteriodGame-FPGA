@@ -13,6 +13,8 @@ entity missile_graph is
         missile_x : in unsigned(9 downto 0);
         missile_y : in unsigned(9 downto 0);
         launch_missile : in std_logic;
+        alien_on : in std_logic;
+        asteroid_on : in std_logic;
         missile_on : out std_logic
     );
 end missile_graph;
@@ -117,6 +119,15 @@ begin
                     end if;
                 end loop;
             end if;
+
+            -- check for collision with alien or asteroid
+            for i in 0 to MAX_NUMBER_OF_MISSILES - 1 loop
+                if (missile_active_array(i) = '1') and (alien_on = '1' or asteroid_on = '1') and (missile_on_array(i) = '1') then
+                    missile_active_array(i) <= '0';
+                    missile_x_starts(i) <= to_unsigned(0, 10);
+                    missile_y_tops(i) <= to_unsigned(0, 10);
+                end if;
+            end loop;
         end if;
     end process;
 
