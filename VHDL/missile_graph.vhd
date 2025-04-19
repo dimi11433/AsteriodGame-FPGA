@@ -142,13 +142,4 @@ begin
             end if;
         end loop;
     end process;
-
-    process (refresh_screen)
-    begin
-        if refresh_screen = '1' then
-            if (not (missile_shoot_available = "00")) then
-                missile_shoot_available <= missile_shoot_available - 1;
-            end if;
-        end if;
-    end process;
 end missile_arch;
