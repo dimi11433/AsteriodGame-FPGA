@@ -55,6 +55,7 @@ architecture game_over_arch of game_over_graph is
 begin
     -- Compute coordinates relative to the top-left of the centered text block
     local_x <= to_integer(pixel_x) - START_X;
+    local_y <= to_integer(pixel_y) - START_Y;
 
     -- Determine if the current pixel is within the game over text area when game_over is active
     in_text_area <= '1' when (game_over = '1' and
