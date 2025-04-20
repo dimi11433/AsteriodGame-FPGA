@@ -4,6 +4,7 @@ use ieee.numeric_std.all;
 -- Package Declaration
 package Types is
     type char_bitmap is array (0 to 7) of std_logic_vector(0 to 7);
+    type text_array_t is array (natural range <>) of std_logic_vector(7 downto 0);
 
     type character_display_prop is record
         char_data : char_bitmap;

@@ -3,8 +3,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.Types.all;
 
-type text_array_t is array (natural range <>) of std_logic_vector(7 downto 0);
-
 entity display_text is
     generic (
         SCREEN_WIDTH  : integer := 640;
@@ -70,7 +68,7 @@ begin
     char_index <= TEXT_ARRAY(char_pos) when in_text_area = '1' else (others => '0');
 
     -- Fetch character bitmap from ROM
-    rom_inst : get_character_rom
+    rom_inst : entity work.get_character_rom
         port map (
             char_addr => char_index,
             char_data => char_data
