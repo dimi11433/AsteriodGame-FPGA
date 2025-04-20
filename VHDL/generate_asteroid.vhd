@@ -205,7 +205,7 @@ begin
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
         variable row, col : integer;
-        variable bit_on : std_logic = '0';
+        variable bit_on : std_logic := '0';
         process(pix_x, pix_y, asteroid_id_arry(ii))
             begin 
                 asteroid_on(ii) <= '0'; --default
