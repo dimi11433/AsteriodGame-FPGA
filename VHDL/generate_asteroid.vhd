@@ -228,7 +228,7 @@ begin
                         end case;
 
                         if (bit_on = '1' )then
-                            asteroid_on(ii) = '1';
+                            asteroid_on(ii) <= '1';
                             asteroid_on_certainly <= '1';
                         else 
                             asteroid_on_certainly <= '0';   
