@@ -32,13 +32,7 @@ architecture asteroids of asteroid_gen is
 
     constant ASTEROID_DY : integer := 1;
     constant ASTEROID_DX : integer := 1;
-
-    
-
     signal pix_x, pix_y : unsigned(9 downto 0);
-
-    
-
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
         asteroid_x_end : unsigned(9 downto 0);
@@ -46,23 +40,13 @@ architecture asteroids of asteroid_gen is
         asteroid_y_bottom : unsigned(9 downto 0);
     end record asteroid_id;
 
-    -- type asteroid_mov is record
-    --     asteroid_x_start_next : unsigned(9 downto 0);
-    --     asteroid_y_top_next : unsigned(9 downto 0);
-    -- end record asteroid_mov;
-
     --we create an array of records which store the asteroids size aka ID
     type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
-   
-    
-    
     signal asteroid_id_arry : asteroid_id_arry_t ;
     -- signal asteroid_mov_arry : asteroid_mov_arry_t;
 
     type next_asteroid_y_top_t is array (0 to 3) of unsigned(9 downto 0);
     signal next_asteroid_y_top : next_asteroid_y_top_t := (others => (others => '0'));
-
-    
     -- signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
     signal asteroid_on : std_logic_vector(3 downto 0);
 
@@ -71,11 +55,7 @@ architecture asteroids of asteroid_gen is
     -- signal refresh_screen : std_logic;
 
     signal asteroid_collision : std_logic_vector(3 downto 0);
-    signal asteroid_collision_happened : std_logic_vector(3 downto 0);
-
-
-    
-    
+    signal asteroid_collision_happened : std_logic_vector(3 downto 0); 
     --asteroid image
     type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
@@ -167,7 +147,6 @@ begin
     pix_y <= unsigned(pixel_y);
 
     asteroid_colour <= "111"; -- white/greyish 
-
     --Is the bit we are at the same bit in any of the asteroids.
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
