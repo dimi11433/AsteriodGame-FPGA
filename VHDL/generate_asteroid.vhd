@@ -65,8 +65,10 @@ architecture asteroids of asteroid_gen is
     
     signal asteroid_id_arry : asteroid_id_arry_t ;
     signal asteroid_mov_arry : asteroid_mov_arry_t;
+
+    type next_asteroid_y_top is array (0 to 3) of unsigned(9 donwto 0);
     
-    signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
+    -- signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
     signal asteroid_on : std_logic_vector(3 downto 0);
 
     signal asteroid_colour : std_logic_vector(2 downto 0);
