@@ -229,13 +229,17 @@ begin
 
                         if (bit_on = '1' )then
                             asteroid_on(ii) <= '1';
-                            asteroid_on_certainly <= '1';
-                        else 
-                            asteroid_on_certainly <= '0';   
                         end if;
                 end if;
         end process;
     end generate g_GENERATE_ROM;
+
+    asteroid_on_certainly <=
+        '1' when asteroid_on(0) = '1' or
+                asteroid_on(1) = '1' or
+                asteroid_on(2) = '1' or
+                asteroid_on(3) = '1'
+        else '0';
 
     --Changing the location update to a generate block 
     g_GENERATE_ID: for ii in 0 to 3 generate
