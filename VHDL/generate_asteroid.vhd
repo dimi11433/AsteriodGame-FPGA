@@ -219,7 +219,7 @@ begin
                         row := to_integer(pix_y) - to_integer(asteroid_id_arry(ii).asteroid_y_top);
                         col := to_integer(pix_x) - to_integer(asteroid_id_arry(ii).asteroid_x_start);
 
-                        case ASTEROID_SIZE(i) is
+                        case ASTEROID_SIZE(ii) is
                             when 10 => bit_on := ASTEROID_ROM_1(row)(col);
                             when 15 => bit_on := ASTEROID_ROM_2(row)(col);
                             when 20 => bit_on := ASTEROID_ROM_3(row)(col);
@@ -228,7 +228,7 @@ begin
                         end case;
 
                         if (bit_on = '1' )then
-                            asteroid_on(i) = '1';
+                            asteroid_on(ii) = '1';
                             asteroid_on_certainly <= '1';
                         else 
                             asteroid_on_certainly <= '0';   
