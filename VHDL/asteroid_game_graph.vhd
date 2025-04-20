@@ -91,7 +91,7 @@ begin
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
-            asteroid_on_certainly => asteroids_on
+            asteroids_on_certainly => asteroids_on
         );
 
     spaceship_graph_unit : entity work.spaceship_graph
