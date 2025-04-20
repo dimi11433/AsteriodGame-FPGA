@@ -57,9 +57,9 @@ architecture asteroids of asteroid_gen is
     type asteroid_mov_arry_t is array (0 to 3) of asteroid_mov;
 
     --We need to create an array for the rom row and rom col
-    type asteroid_rom_addr is array (0 to 3) of std_logic;
-    type asteroid_rom_col is array (0 to 3) of std_logic;
-    type ateroid_rom_data is array (0 to 3) of std_logic;
+    -- type asteroid_rom_addr is array (0 to 3) of std_logic;
+    -- type asteroid_rom_col is array (0 to 3) of std_logic;
+    -- type ateroid_rom_data is array (0 to 3) of std_logic;
 
     
     
@@ -169,6 +169,8 @@ begin
     asteroid_colour <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
+    
+
 
     process(pix_y, pix_x)
     begin 
@@ -201,13 +203,50 @@ begin
         end loop;
     end process;
 
-    process(pix_x, pix_y)
-    begin
-        for i in 0 to 3 loop
-            asteroid_id_arry(i).asteroid_x_end <= asteroid_id_arry(i).asteroid_x_start + ASTEROID_SIZE(i) - 1;
-            asteroid_id_arry(i).asteroid_y_bottom <= asteroid_id_arry(i).asteroid_y_top + ASTEROID_SIZE(i) - 1; 
-        end loop;
-    end process; 
+    g_GENERATE_ROM: for ii in 0 to 3 generate
+        variable row, col : integer;
+        variable bit_on : std_logic = '0';
+        process(pix_x, pix_y, asteroid_id_arry(i))
+            begin 
+                asteroid_on(i) <= '0'; --default
+                --check bounds 
+                if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
+                pix_x <= asteroid_id_arry(i).asteroid_x_end   and
+                pix_y >= asteroid_id_arry(i).asteroid_y_top   and
+                pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
+                    asteroid_rom_bit(i) = '1') then
+                        
+                        row := to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top);
+                        col := to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start);
+
+                        case ASTEROID_SIZE(i) is
+                            when 10 => bit_on := ASTEROID_ROM_1(row)(col);
+                            when 15 => bit_on := ASTEROID_ROM_2(row)(col);
+                            when 20 => bit_on := ASTEROID_ROM_3(row)(col);
+                            when 25 => bit_on := ASTEROID_ROM_4(row)(col);
+                            when others => bit_on := '0';
+                        end case;
+
+                        if (bit_on = '1' )then
+                            asteroid_on(i) = '1';
+                            asteroid_on_certainly <= '1';
+                        else 
+                            asteroid_on_certainly <= '0';   
+                        end if;
+                end if;
+        end process;
+    end generate g_GENERATE_ROM;
+
+
+                
+
+
+
+    --Changing the location update to a generate block 
+    g_GENERATE_ID: for ii in 0 to 3 generate
+        asteroid_id_arry(i).asteroid_x_end <= asteroid_id_arry(i).asteroid_x_start + to_unsigned(ASTEROID_SIZE(i) - 1, 10);
+        asteroid_id_arry(i).asteroid_y_bottom <= asteroid_id_arry(i).asteroid_y_top + to_unsigned(ASTEROID_SIZE(i) - 1, 10);
+    end generate g_GENERATE_ID;
 
     -- refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
     --     pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
