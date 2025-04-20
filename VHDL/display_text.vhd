@@ -3,6 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.Types.all;
 
+type text_array_t is array (natural range <>) of std_logic_vector(7 downto 0);
+
 entity display_text is
     generic (
         SCREEN_WIDTH  : integer := 640;
@@ -14,7 +16,7 @@ entity display_text is
         TEXT_HEIGHT   : integer := CHAR_HEIGHT;
         START_X       : integer := (SCREEN_WIDTH - TEXT_WIDTH) / 2;
         START_Y       : integer := (SCREEN_HEIGHT - TEXT_HEIGHT) / 2;
-        TEXT_ARRAY    : array (0 to TEXT_LENGTH - 1) of std_logic_vector(7 downto 0) := (
+        TEXT_ARRAY    : text_array_t(0 to TEXT_LENGTH - 1)  := (
             0 => x"10", -- 'g'
             1 => x"0A", -- 'a'
             2 => x"16", -- 'm'
@@ -37,7 +39,6 @@ entity display_text is
 end entity display_text;
 
 architecture rtl of display_text is
-    subtype text_idx_t is integer range 0 to TEXT_LENGTH-1;
     signal local_x      : integer range -TEXT_WIDTH to SCREEN_WIDTH;
     signal local_y      : integer range -TEXT_HEIGHT to SCREEN_HEIGHT;
     signal in_text_area : std_logic;
