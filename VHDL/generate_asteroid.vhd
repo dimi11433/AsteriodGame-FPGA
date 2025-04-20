@@ -77,9 +77,10 @@ architecture asteroids of asteroid_gen is
 
     -- signal refresh_screen : std_logic;
 
-    signal collision_with_asteroid : std_logic;
+    signal asteroid_collision : std_logic_vector(3 downto 0);
 
-    signal collision_with_asteroid_happened : std_logic;
+
+    
     
     --asteroid image
     type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
@@ -239,6 +240,15 @@ begin
         end process;
     end generate g_GENERATE_ROM;
 
+    g_GEN_COLL: for idx in 0 to 3 generate
+        process(spaceship_on, asteroid_on(idx))
+            begin
+                asteroid_collision(idx) <= '1' when (spaceship_on = '1' and asteroid_on(idx) = '1')
+                    else '0';
+        end process;
+    end generate g_GEN_COLL;
+
+
     asteroid_on_certainly <=
         '1' when asteroid_on(0) = '1' or
                 asteroid_on(1) = '1' or
@@ -255,14 +265,14 @@ begin
     -- refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
     --     pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
     --     '0';
-    process(spaceship_on, asteroid_on)
-    begin
-        for i in 0 to 3 loop
-            if(spaceship_on = '1' and asteroid_on(i) = '1')then
-                collision_with_asteroid <= '1';
-            end if;
-        end loop;
-    end process;
+    -- process(spaceship_on, asteroid_on)
+    -- begin
+    --     for i in 0 to 3 loop
+    --         if(spaceship_on = '1' and asteroid_on(i) = '1')then
+    --             collision_with_asteroid <= '1';
+    --         end if;
+    --     end loop;
+    -- end process;
 
     --move the asteroids vertical position
     g_GENERATE_movey: for idx in 0 to 3 generate
@@ -290,19 +300,14 @@ begin
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
-                    asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
-                    if collision_with_asteroid_happened = '1' then
-                        asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10);
-                        collision_with_asteroid_happened <= '0';
+                    if collision_with_asteroid(i) <= '1' then
+                        asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10); 
+                        collision_with_asteroid(i) <= '0';
                     else
-                        asteroid_id_arry(i).asteroid_y_top <= asteroid_mov_arry(i).asteroid_y_top_next;
+                        asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                     end if;
-                    
+                    asteroid_collision(i) <= '0';    
                 end loop;
-            end if;
-
-            if collision_with_asteroid = '1' then
-                collision_with_asteroid_happened <= '1';
             end if;
         end if;
     end process;
