@@ -175,39 +175,6 @@ begin
     asteroid_colour <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
-    
-
-
-    -- process(pix_y, pix_x)
-    -- begin 
-    --     for i in 0 to 3 loop 
-    --         asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))
-    --         (to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
-
-    --     end loop;
-    -- end process;
-
-    -- process(pix_x, pix_y)
-    -- begin
-    --     for i in 0 to 3 loop
-    --         if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
-    --             pix_x <= asteroid_id_arry(i).asteroid_x_end   and
-    --             pix_y >= asteroid_id_arry(i).asteroid_y_top   and
-    --             pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
-    --                 asteroid_rom_bit(i) = '1')
-    --         then
-    --           asteroid_on(i) <= '1';
-    --         else
-    --           asteroid_on(i) <= '0';
-    --         end if;
-
-    --         if (asteroid_on(i) = '1') then
-    --             asteroid_on_certainly <= '1';
-    --         else
-    --             asteroid_on_certainly <= '0';
-    --         end if;
-    --     end loop;
-    -- end process;
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
         process(pix_x, pix_y, asteroid_id_arry(ii))
@@ -262,18 +229,6 @@ begin
         asteroid_id_arry(ii).asteroid_y_bottom <= asteroid_id_arry(ii).asteroid_y_top + to_unsigned(ASTEROID_SIZE(ii) - 1, 10);
     end generate g_GENERATE_ID;
 
-    -- refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
-    --     pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
-    --     '0';
-    -- process(spaceship_on, asteroid_on)
-    -- begin
-    --     for i in 0 to 3 loop
-    --         if(spaceship_on = '1' and asteroid_on(i) = '1')then
-    --             collision_with_asteroid <= '1';
-    --         end if;
-    --     end loop;
-    -- end process;
-
     --move the asteroids vertical position
     g_GENERATE_movey: for idx in 0 to 3 generate
         process(asteroid_id_arry(idx).asteroid_y_top)
@@ -289,25 +244,28 @@ begin
         end process;
     end generate g_GENERATE_movey;
         
-    process (clk, reset)
+    process (clk, reset, refresh_screen)
     begin
         if reset = '1' then
+            asteroid_collision_happened <= (others => '0');
             for i in 0 to 3 loop
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE(i) / 2, 10);
-                asteroid_id_arry(i).asteroid_y_top <= (others => '0');
+                asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                 --number_of_lives <= "11"; -- 3 lives
             end loop;
-        elsif rising_edge(clk) then
-            if refresh_screen = '1' then
-                for i in 0 to 3 loop
-                    if asteroid_collision(i) <= '1' then
-                        asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10); 
-                        asteroid_collision(i) <= '0';
-                    else
-                        asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
-                    end if;
-                    asteroid_collision(i) <= '0';    
-                end loop;
+        elsif(rising_edge(clk)) then
+            for i in 0 to 3 loop
+                asteroid_collision_happened(i) <= asteroid_collision(i) or asteroid_collision_happened(i);
+            end loop;
+                if refresh_screen = '1' then
+                    for i in 0 to 3 loop
+                        if asteroid_collision(i) = '1' then
+                            asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
+                            asteroid_collision_happened(i) <= '0';
+                        else
+                            asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
+                        end if;
+                    end loop;
             end if;
         end if;
     end process;

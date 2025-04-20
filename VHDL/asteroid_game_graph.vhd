@@ -294,10 +294,10 @@ begin
                     graph_rgb <= alien_color; 
                 elsif spaceship_on = '1' then
                     graph_rgb <= spaceship_color; 
+                elsif asteroids_on = '1' then
+                    graph_rgb <= multiasteroid_color ; 
                 elsif asteroid_on = '1' then
                     graph_rgb <= asteroid_color; 
-                elsif asteroids_on = '1' then
-                    graph_rgb <= multiasteroid_color; 
                 else
                     graph_rgb <= "000"; 
                 end if;
