@@ -172,52 +172,52 @@ begin
     
 
 
-    process(pix_y, pix_x)
-    begin 
-        for i in 0 to 3 loop 
-            asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))
-            (to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
+    -- process(pix_y, pix_x)
+    -- begin 
+    --     for i in 0 to 3 loop 
+    --         asteroid_rom_bit(i) <= ASTEROID_ROM_1(to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top))
+    --         (to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start));
 
-        end loop;
-    end process;
+    --     end loop;
+    -- end process;
 
-    process(pix_x, pix_y)
-    begin
-        for i in 0 to 3 loop
-            if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
-                pix_x <= asteroid_id_arry(i).asteroid_x_end   and
-                pix_y >= asteroid_id_arry(i).asteroid_y_top   and
-                pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
-                    asteroid_rom_bit(i) = '1')
-            then
-              asteroid_on(i) <= '1';
-            else
-              asteroid_on(i) <= '0';
-            end if;
+    -- process(pix_x, pix_y)
+    -- begin
+    --     for i in 0 to 3 loop
+    --         if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
+    --             pix_x <= asteroid_id_arry(i).asteroid_x_end   and
+    --             pix_y >= asteroid_id_arry(i).asteroid_y_top   and
+    --             pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
+    --                 asteroid_rom_bit(i) = '1')
+    --         then
+    --           asteroid_on(i) <= '1';
+    --         else
+    --           asteroid_on(i) <= '0';
+    --         end if;
 
-            if (asteroid_on(i) = '1') then
-                asteroid_on_certainly <= '1';
-            else
-                asteroid_on_certainly <= '0';
-            end if;
-        end loop;
-    end process;
+    --         if (asteroid_on(i) = '1') then
+    --             asteroid_on_certainly <= '1';
+    --         else
+    --             asteroid_on_certainly <= '0';
+    --         end if;
+    --     end loop;
+    -- end process;
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
         variable row, col : integer;
         variable bit_on : std_logic = '0';
-        process(pix_x, pix_y, asteroid_id_arry(i))
+        process(pix_x, pix_y, asteroid_id_arry(ii))
             begin 
-                asteroid_on(i) <= '0'; --default
+                asteroid_on(ii) <= '0'; --default
                 --check bounds 
-                if (pix_x >= asteroid_id_arry(i).asteroid_x_start and
-                pix_x <= asteroid_id_arry(i).asteroid_x_end   and
-                pix_y >= asteroid_id_arry(i).asteroid_y_top   and
-                pix_y <= asteroid_id_arry(i).asteroid_y_bottom and
-                    asteroid_rom_bit(i) = '1') then
+                if (pix_x >= asteroid_id_arry(ii).asteroid_x_start and
+                pix_x <= asteroid_id_arry(ii).asteroid_x_end   and
+                pix_y >= asteroid_id_arry(ii).asteroid_y_top   and
+                pix_y <= asteroid_id_arry(ii).asteroid_y_bottom and
+                    asteroid_rom_bit(ii) = '1') then
                         
-                        row := to_integer(pix_y) - to_integer(asteroid_id_arry(i).asteroid_y_top);
-                        col := to_integer(pix_x) - to_integer(asteroid_id_arry(i).asteroid_x_start);
+                        row := to_integer(pix_y) - to_integer(asteroid_id_arry(ii).asteroid_y_top);
+                        col := to_integer(pix_x) - to_integer(asteroid_id_arry(ii).asteroid_x_start);
 
                         case ASTEROID_SIZE(i) is
                             when 10 => bit_on := ASTEROID_ROM_1(row)(col);
@@ -237,15 +237,10 @@ begin
         end process;
     end generate g_GENERATE_ROM;
 
-
-                
-
-
-
     --Changing the location update to a generate block 
     g_GENERATE_ID: for ii in 0 to 3 generate
-        asteroid_id_arry(i).asteroid_x_end <= asteroid_id_arry(i).asteroid_x_start + to_unsigned(ASTEROID_SIZE(i) - 1, 10);
-        asteroid_id_arry(i).asteroid_y_bottom <= asteroid_id_arry(i).asteroid_y_top + to_unsigned(ASTEROID_SIZE(i) - 1, 10);
+        asteroid_id_arry(ii).asteroid_x_end <= asteroid_id_arry(ii).asteroid_x_start + to_unsigned(ASTEROID_SIZE(ii) - 1, 10);
+        asteroid_id_arry(ii).asteroid_y_bottom <= asteroid_id_arry(ii).asteroid_y_top + to_unsigned(ASTEROID_SIZE(ii) - 1, 10);
     end generate g_GENERATE_ID;
 
     -- refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
