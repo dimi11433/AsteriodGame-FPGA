@@ -34,6 +34,9 @@ architecture behavioral of info_section_graph is
 
     signal text_y_top, text_x_start, text_y_bottom, text_x_end : unsigned(9 downto 0);
 
+    -- Signal to capture text-on from display_text for the static suffix
+    signal lives_left_text_on : std_logic;
+
 begin
     text_y_top <= to_unsigned(10, 10);
     text_x_start <= to_unsigned(10, 10);
@@ -41,13 +44,13 @@ begin
     text_x_end <= to_unsigned(18, 10);
     -- Render left bar of info section: vertical bar at defined X and full Y range
     left_bar_on <= '1' when (pixel_x >= INFO_SECTION_LEFT and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
-         '0';
+        (pixel_y >= to_unsigned(0, 10) and pixel_y <= INFO_SECTION_BOTTOM) else
+        '0';
 
     -- Render bottom bar of info section: horizontal bar at defined Y and full X range
     bottom_bar_on <= '1' when (pixel_x >= to_unsigned(0, 10) and pixel_x <= INFO_SECTION_RIGHT) and
-         (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
-         '0';
+        (pixel_y >= INFO_SECTION_TOP and pixel_y <= INFO_SECTION_BOTTOM) else
+        '0';
 
     -- Sample character ROM bit for current pixel within the text bounding box
     text_rom_bit <= character_rom(to_integer(pixel_y(2 downto 0) - text_y_top(2 downto 0)))(to_integer(pixel_x(2 downto 0) - text_x_start(2 downto 0)));
@@ -58,17 +61,17 @@ begin
         '0';
 
     -- Combine bars and text signals to drive the overall info section visibility
-    info_section_on <= bottom_bar_on or left_bar_on or text_on;
+    info_section_on <= bottom_bar_on or left_bar_on or text_on or lives_left_text_on;
 
     get_character_rom_unit : entity work.get_character_rom
-        port map (
+        port map(
             char_addr => fetch_character_addr,
             char_data => character_rom
         );
 
     -- get the character address from the number of lives
     -- Update character address each frame based on number of lives
-    process(clk, reset)
+    process (clk, reset)
     begin
         -- On reset: clear fetch_character_addr to default
         if reset = '1' then
@@ -81,6 +84,33 @@ begin
         end if;
     end process;
 
-    -- display the rom
-    
+    -- Render the static suffix " lives left"
+    lives_left_display : entity work.display_text
+        generic map(
+            TEXT_LENGTH => 11,
+            START_X => 18,
+            START_Y => 10,
+            TEXT_ARRAY => (
+            0 => x"FF", -- ' ' (space)
+            1 => x"15", -- 'l'
+            2 => x"12", -- 'i'
+            3 => x"1F", -- 'v'
+            4 => x"0E", -- 'e'
+            5 => x"1C", -- 's'
+            6 => x"FF", -- ' ' (space)
+            7 => x"15", -- 'l'
+            8 => x"0E", -- 'e'
+            9 => x"0F", -- 'f'
+            10 => x"1D" -- 't'
+            )
+        )
+        port map(
+            clk => clk,
+            reset => reset,
+            pixel_x => pixel_x,
+            pixel_y => pixel_y,
+            enable => '1',
+            text_on => lives_left_text_on
+        );
+
 end behavioral;
