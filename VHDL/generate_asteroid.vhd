@@ -204,9 +204,9 @@ begin
     -- end process;
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
-        variable row, col : integer;
-        variable bit_on : std_logic := '0';
         process(pix_x, pix_y, asteroid_id_arry(ii))
+            variable row, col : integer;
+            variable bit_on : std_logic := '0';
             begin 
                 asteroid_on(ii) <= '0'; --default
                 --check bounds 
