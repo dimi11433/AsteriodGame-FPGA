@@ -78,6 +78,7 @@ architecture asteroids of asteroid_gen is
     -- signal refresh_screen : std_logic;
 
     signal asteroid_collision : std_logic_vector(3 downto 0);
+    signal asteroid_collision_happened : std_logic_vector(3 downto 0);
 
 
     
