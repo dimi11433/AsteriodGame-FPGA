@@ -66,6 +66,7 @@ architecture asteroids of asteroid_gen is
     signal asteroid_id_arry : asteroid_id_arry_t ;
     signal asteroid_mov_arry : asteroid_mov_arry_t;
     
+    signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
     signal asteroid_on : std_logic_vector(3 downto 0);
 
     signal asteroid_colour : std_logic_vector(2 downto 0);
@@ -260,16 +261,32 @@ begin
     end process;
 
     --move the asteroids vertical position
-    process (asteroid_id_arry(0).asteroid_y_top,asteroid_id_arry(1).asteroid_y_top, asteroid_id_arry(2).asteroid_y_top, asteroid_id_arry(3).asteroid_y_top)
-    begin
-        for i in 0 to 3 loop
-            if asteroid_id_arry(i).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(i), 10) then
-                asteroid_mov_arry(i).asteroid_y_top_next <= asteroid_id_arry(i).asteroid_y_top + ASTEROID_DY;
-            else
-                asteroid_mov_arry(i).asteroid_y_top_next <= to_unsigned(0, 10);
-            end if;    
-        end loop;
-    end process;
+    g_GENERATE_movey: for idx in 0 to 3 generate
+        process(asteroid_id_arry(idx).asteroid_y_top)
+            begin
+                if asteroid_id_arry(idx).asteroid_y_top 
+                    < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(idx), 10) then
+                next_asteroid_y_top(idx) 
+                    <= asteroid_id_arry(idx).asteroid_y_top 
+                    + to_unsigned(ASTEROID_DY, 10);
+                else
+                    next_asteroid_y_top(idx) <= (others => '0');
+                end if;
+        end process;
+    end generate g_GENERATE_movey;
+        
+
+
+    -- process (asteroid_id_arry(0).asteroid_y_top,asteroid_id_arry(1).asteroid_y_top, asteroid_id_arry(2).asteroid_y_top, asteroid_id_arry(3).asteroid_y_top)
+    -- begin
+    --     for i in 0 to 3 loop
+    --         if asteroid_id_arry(i).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(i), 10) then
+    --             asteroid_mov_arry(i).asteroid_y_top_next <= asteroid_id_arry(i).asteroid_y_top + ASTEROID_DY;
+    --         else
+    --             asteroid_mov_arry(i).asteroid_y_top_next <= to_unsigned(0, 10);
+    --         end if;    
+    --     end loop;
+    -- end process;
     --Lets come back to the Dx movements
     -- process(asteroid_on)
     -- begin
@@ -287,6 +304,7 @@ begin
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
+                    asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                     if collision_with_asteroid_happened = '1' then
                         asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10);
                         collision_with_asteroid_happened <= '0';
