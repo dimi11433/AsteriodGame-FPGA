@@ -52,8 +52,8 @@ architecture asteroid_arch of asteroid_graph is
     signal alien_1_active : std_logic;
 
     -- Collision detection signals for various objects
-    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien : std_logic; 
-    signal missile_collision_with_alien : std_logic; 
+    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision : std_logic; 
+    signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
     signal spaceship_collision_with_asteroid_happened : std_logic;
 
     -- Game over tracking signals
@@ -107,7 +107,7 @@ begin
             btnd => btnd,
             btnc => btnc,
             refresh_screen => refresh_screen,
-            collision => spaceship_collision_with_asteroid or spaceship_collision_with_alien,
+            collision => spaceship_collision,
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             missile_x => missile_x,
@@ -141,7 +141,7 @@ begin
             pixel_x => pix_x,
             pixel_y => pix_y,
             refresh_screen => refresh_screen,
-            collision => spaceship_collision_with_asteroid or spaceship_collision_with_alien,
+            collision => spaceship_collision,
             number_of_lives => number_of_lives,
             info_section_on => info_section_on
         );
@@ -226,6 +226,14 @@ begin
     -- Collision detection: set flag when two sprite regions overlap
     missile_collision_with_alien <= '1' when (missile_on = '1' and alien_1_on = '1') else
         '0'; 
+
+    -- Collision detection: set flag when two sprite regions overlap
+    missile_collision_with_spaceship <= '1' when (alien_missile_on = '1' and spaceship_on = '1') else
+        '0';
+
+    spaceship_collision <= (spaceship_collision_with_asteroid or
+        spaceship_collision_with_alien or
+        missile_collision_with_spaceship);
 
     alien_1_active <= '1'; 
 
