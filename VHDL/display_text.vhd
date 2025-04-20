@@ -15,12 +15,12 @@ entity display_text is
         START_X       : integer := (SCREEN_WIDTH - TEXT_WIDTH) / 2;
         START_Y       : integer := (SCREEN_HEIGHT - TEXT_HEIGHT) / 2;
         TEXT_ARRAY    : text_array_t(0 to TEXT_LENGTH - 1)  := (
-            0 => x"10", -- 'g'
+            0 => x"2A", -- 'G'
             1 => x"0A", -- 'a'
             2 => x"16", -- 'm'
             3 => x"0E", -- 'e'
             4 => x"FF", -- space
-            5 => x"18", -- 'o'
+            5 => x"32", -- 'O'
             6 => x"1F", -- 'v'
             7 => x"0E", -- 'e'
             8 => x"1B"  -- 'r'

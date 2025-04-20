@@ -41,7 +41,7 @@ architecture asteroid_arch of asteroid_graph is
 
     -- On signal for each object to determine if it should be rendered
     signal asteroid_on, alien_1_on, spaceship_on : std_logic;
-    signal info_section_on, missile_on, asteroids_on, gave_over_text_on, alien_missile_on : std_logic;
+    signal info_section_on, missile_on, asteroids_on, gave_over_text_on, game_start_text_on, alien_missile_on : std_logic;
 
     -- Color signals for each object 
     signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color, multiasteroid_color : std_logic_vector(2 downto 0); 
@@ -59,6 +59,10 @@ architecture asteroid_arch of asteroid_graph is
     -- Game over tracking signals
     signal number_of_lives : unsigned(1 downto 0); 
     signal game_over : std_logic;
+
+    -- Game start tracking signals
+    signal game_start : std_logic;
+    signal game_starting : unsigned(3 downto 0);
 
     -- Missile launch signal and coordinates
     signal launch_missile : std_logic; 
@@ -178,16 +182,7 @@ begin
             missile_on => alien_missile_on
         );
 
-    -- game_over_graph_unit : entity work.game_over_graph
-    --     port map(
-    --         clk => clk,
-    --         reset => reset,
-    --         pixel_x => pix_x,
-    --         pixel_y => pix_y,
-    --         game_over => game_over,
-    --         text_on => gave_over_text_on
-    --     );
-
+    -- Game over text display
     game_over_display : entity work.display_text
         port map(
             clk     => clk,
@@ -196,6 +191,17 @@ begin
             pixel_y => pix_y,
             enable  => game_over,
             text_on => gave_over_text_on
+        );
+
+    -- Game start text display
+    game_start_display : entity work.display_text
+        port map(
+            clk     => clk,
+            reset   => reset,
+            pixel_x => pix_x,
+            pixel_y => pix_y,
+            enable  => game_start,
+            text_on => game_start_text_on
         );
 
     -- Convert pixel_x and pixel_y to unsigned for arithmetic operations
@@ -245,7 +251,10 @@ begin
         spaceship_collision_with_alien or
         missile_collision_with_spaceship);
 
-    alien_1_active <= '1'; 
+    alien_1_active <= '1';
+
+    game_start <= '1' when (game_starting > "0000") else
+        '0';
 
     -- Asteroid movement: update vertical position each frame, wrap around at bottom
     process (asteroid_y_top)
@@ -291,12 +300,32 @@ begin
         end if;
     end process;
 
+    -- Game start logic: assert when game is starting
+    process (clk, reset)
+    begin
+        if reset = '1' then
+            game_starting <= (others => '1');
+        elsif rising_edge(clk) then
+            if refresh_screen = '1' then
+                if game_starting > "0000" then
+                    game_starting <= game_starting - 1;
+                end if;
+            end if;
+        end if;
+    end process;
+
     -- Rendering priority: choose which sprite's color outputs for each pixel
-    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on, alien_missile_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on, alien_missile_on, game_start, game_start_text_on)
     begin
         if video_on = '1' then
             if game_over = '1' then
                 if gave_over_text_on = '1' then
+                    graph_rgb <= "111"; 
+                else
+                    graph_rgb <= "000"; 
+                end if;
+            elsif game_start = '1' then
+                if game_start_text_on = '1' then
                     graph_rgb <= "111"; 
                 else
                     graph_rgb <= "000"; 
