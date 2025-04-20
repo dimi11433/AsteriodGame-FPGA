@@ -165,6 +165,7 @@ begin
     -- Synchronous state register update on refresh tick
     process(clk, reset)
     begin
+        launch_missile <= '0'; -- Default to no missile launch
         if reset = '1' then
             shoot_state <= SHOOT_1;
             launch_missile <= '0';
