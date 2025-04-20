@@ -55,6 +55,12 @@ architecture asteroids of asteroid_gen is
     type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
     --create an array of records which store the movements of each asteroid
     type asteroid_mov_arry_t is array (0 to 3) of asteroid_mov;
+
+    --We need to create an array for the rom row and rom col
+    type asteroid_rom_addr is array (0 to 3) of std_logic;
+    type asteroid_rom_col is array (0 to 3) of std_logic;
+    type ateroid_rom_data is array (0 to 3) of std_logic;
+
     
     
     signal asteroid_id_arry : asteroid_id_arry_t ;
@@ -163,6 +169,7 @@ begin
     asteroid_colour <= "111"; -- white/greyish 
 
     --Is the bit we are at the same bit in any of the asteroids.
+
     process(pix_y, pix_x)
     begin 
         for i in 0 to 3 loop 
