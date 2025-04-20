@@ -37,7 +37,7 @@ architecture asteroids of asteroid_gen is
 
     signal pix_x, pix_y : unsigned(9 downto 0);
 
-    signal asteroid_rom_bit : std_logic_vector(3 downto 0);
+    
 
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
@@ -46,21 +46,14 @@ architecture asteroids of asteroid_gen is
         asteroid_y_bottom : unsigned(9 downto 0);
     end record asteroid_id;
 
-    type asteroid_mov is record
-        asteroid_x_start_next : unsigned(9 downto 0);
-        asteroid_y_top_next : unsigned(9 downto 0);
-    end record asteroid_mov;
+    -- type asteroid_mov is record
+    --     asteroid_x_start_next : unsigned(9 downto 0);
+    --     asteroid_y_top_next : unsigned(9 downto 0);
+    -- end record asteroid_mov;
 
     --we create an array of records which store the asteroids size aka ID
     type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
-    --create an array of records which store the movements of each asteroid
-    -- type asteroid_mov_arry_t is array (0 to 3) of asteroid_mov;
-
-    --We need to create an array for the rom row and rom col
-    -- type asteroid_rom_addr is array (0 to 3) of std_logic;
-    -- type asteroid_rom_col is array (0 to 3) of std_logic;
-    -- type ateroid_rom_data is array (0 to 3) of std_logic;
-
+   
     
     
     signal asteroid_id_arry : asteroid_id_arry_t ;
@@ -187,8 +180,7 @@ begin
                 if (pix_x >= asteroid_id_arry(ii).asteroid_x_start and
                 pix_x <= asteroid_id_arry(ii).asteroid_x_end   and
                 pix_y >= asteroid_id_arry(ii).asteroid_y_top   and
-                pix_y <= asteroid_id_arry(ii).asteroid_y_bottom and
-                    asteroid_rom_bit(ii) = '1') then
+                pix_y <= asteroid_id_arry(ii).asteroid_y_bottom) then
                         
                         row := to_integer(pix_y) - to_integer(asteroid_id_arry(ii).asteroid_y_top);
                         col := to_integer(pix_x) - to_integer(asteroid_id_arry(ii).asteroid_x_start);
@@ -234,11 +226,8 @@ begin
     g_GENERATE_movey: for idx in 0 to 3 generate
         process(asteroid_id_arry(idx).asteroid_y_top)
             begin
-                if asteroid_id_arry(idx).asteroid_y_top 
-                    < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(idx), 10) then
-                next_asteroid_y_top(idx) 
-                    <= asteroid_id_arry(idx).asteroid_y_top 
-                    + to_unsigned(ASTEROID_DY, 10);
+                if (asteroid_id_arry(idx).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(idx), 10)) then
+                    next_asteroid_y_top(idx) <= asteroid_id_arry(idx).asteroid_y_top + to_unsigned(ASTEROID_DY, 10);
                 else
                     next_asteroid_y_top(idx) <= (others => '0');
                 end if;
@@ -256,11 +245,11 @@ begin
             end loop;
         elsif(rising_edge(clk)) then
             for i in 0 to 3 loop
-                asteroid_collision_happened(i) <= asteroid_collision(i) or asteroid_collision_happened(i);
+                asteroid_collision_happened(i) <= asteroid_collision(i);
             end loop;
                 if refresh_screen = '1' then
                     for i in 0 to 3 loop
-                        if asteroid_collision(i) = '1' then
+                        if asteroid_collision_happened(i) = '1' then
                             asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                             asteroid_collision_happened(i) <= '0';
                         else
