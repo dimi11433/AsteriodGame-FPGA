@@ -178,13 +178,23 @@ begin
             missile_on => alien_missile_on
         );
 
-    game_over_graph_unit : entity work.game_over_graph
+    -- game_over_graph_unit : entity work.game_over_graph
+    --     port map(
+    --         clk => clk,
+    --         reset => reset,
+    --         pixel_x => pix_x,
+    --         pixel_y => pix_y,
+    --         game_over => game_over,
+    --         text_on => gave_over_text_on
+    --     );
+
+    game_over_display : entity work.display_text
         port map(
-            clk => clk,
-            reset => reset,
+            clk     => clk,
+            reset   => reset,
             pixel_x => pix_x,
             pixel_y => pix_y,
-            game_over => game_over,
+            enable  => game_over,
             text_on => gave_over_text_on
         );
 
