@@ -300,9 +300,9 @@ begin
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
-                    if collision_with_asteroid(i) <= '1' then
+                    if asteroid_collision(i) <= '1' then
                         asteroid_id_arry(i).asteroid_y_top <= to_unsigned(0, 10); 
-                        collision_with_asteroid(i) <= '0';
+                        asteroid_collision(i) <= '0';
                     else
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                     end if;
