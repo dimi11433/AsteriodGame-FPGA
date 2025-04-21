@@ -238,7 +238,7 @@ begin
     process (clk, reset)
     variable rnd_val : integer;
     variable base : integer;
-    variable col_flag : std_logic_vector(3 downto 0);
+    -- variable col_flag : std_logic_vector(3 downto 0);
     begin
         if reset = '1' then        
             for i in 0 to 3 loop
@@ -251,29 +251,29 @@ begin
         elsif(rising_edge(clk)) then
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
-                    if col_flag(i) = '1' then
+                    if asteroid_collision(i) = '1' then
                         base := to_integer(unsigned(rnd10));
                         rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                         asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');
-                        col_flag(i) := '0'; 
+                        -- col_flag(i) := '0'; 
                     else
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                         asteroid_id_arry(i).asteroid_x_start <= next_asteroid_x_start(i);
                     end if;
                 end loop;
-                if(asteroid_collision(0) = '1')then
-                    col_flag(0) := '1';
-                end if;
-                if(asteroid_collision(1) = '1')then
-                    col_flag(1) := '1';
-                end if;   
-                if(asteroid_collision(2) = '1')then
-                    col_flag(2) := '1';
-                end if; 
-                if(asteroid_collision(3) = '1')then
-                    col_flag(3) := '1';
-                end if;       
+                -- if(asteroid_collision(0) = '1')then
+                --     col_flag(0) := '1';
+                -- end if;
+                -- if(asteroid_collision(1) = '1')then
+                --     col_flag(1) := '1';
+                -- end if;   
+                -- if(asteroid_collision(2) = '1')then
+                --     col_flag(2) := '1';
+                -- end if; 
+                -- if(asteroid_collision(3) = '1')then
+                --     col_flag(3) := '1';
+                -- end if;       
             end if;
         end if;
     end process;
