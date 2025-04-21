@@ -30,7 +30,7 @@ architecture asteroids of asteroid_gen is
     );
 
 
-    constant ASTEROID_DY : integer := 2;
+    constant ASTEROID_DY : integer := 5;
     constant ASTEROID_DX : integer := 4;
     signal pix_x, pix_y : unsigned(9 downto 0);
     type asteroid_id is record 
