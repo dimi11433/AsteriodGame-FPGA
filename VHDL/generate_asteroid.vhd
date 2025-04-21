@@ -227,7 +227,7 @@ begin
                     next_asteroid_y_top(idx) <= asteroid_id_arry(idx).asteroid_y_top + to_unsigned(ASTEROID_DY, 10);
                 else
                     base := to_integer(unsigned(rnd10));
-                    rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
+                    rnd_val := (base + idx*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(idx) + 1);
                     next_asteroid_y_top(idx) <= (others => '0');
                     next_asteroid_x_start(idx) <= to_unsigned(rnd_val, 10);
                 end if;
