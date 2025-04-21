@@ -30,8 +30,8 @@ architecture asteroids of asteroid_gen is
     );
 
 
-    constant ASTEROID_DY : integer := 1;
-    constant ASTEROID_DX : integer := 1;
+    constant ASTEROID_DY : integer := 5;
+    constant ASTEROID_DX : integer := 4;
     signal pix_x, pix_y : unsigned(9 downto 0);
     type asteroid_id is record 
         asteroid_x_start : unsigned(9 downto 0);
@@ -233,7 +233,7 @@ begin
             asteroid_collision_happened <= (others => '0');
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
-                rnd_val := rnd mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                rnd_val := rnd_val mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
                 asteroid_collision_happened(i)       <= '0';  
@@ -247,7 +247,7 @@ begin
                     for i in 0 to 3 loop
                         if asteroid_collision_happened(i) = '1' then
                             rnd_val := to_integer(unsigned(rnd10));
-                            rnd_val := rnd mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                            rnd_val := rnd_val mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
                             asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val);
                             asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                             asteroid_collision_happened(i) <= '0';
