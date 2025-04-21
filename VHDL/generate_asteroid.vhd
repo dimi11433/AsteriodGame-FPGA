@@ -48,6 +48,9 @@ architecture asteroids of asteroid_gen is
 
     type next_asteroid_y_top_t is array (0 to 3) of unsigned(9 downto 0);
     signal next_asteroid_y_top : next_asteroid_y_top_t := (others => (others => '0'));
+
+    type next_asteroid_x_start_t is array (0 to 3) of unsigned(9 downto 0);
+    signal next_asteroid_x_start : next_asteroid_x_start_t := (others => (others => '0'));
     -- signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
     signal asteroid_on : std_logic_vector(3 downto 0);
 
@@ -217,11 +220,16 @@ begin
     --move the asteroids vertical position
     g_GENERATE_movey: for idx in 0 to 3 generate
         process(asteroid_id_arry(idx).asteroid_y_top)
+            variable rnd_val : integer;
+            variable base : integer;
             begin
                 if (asteroid_id_arry(idx).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(idx), 10)) then
                     next_asteroid_y_top(idx) <= asteroid_id_arry(idx).asteroid_y_top + to_unsigned(ASTEROID_DY, 10);
                 else
+                    base := to_integer(unsigned(rnd10));
+                    rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                     next_asteroid_y_top(idx) <= (others => '0');
+                    next_asteroid_x_start(idx) <= to_unsigned(rnd_val, 10);
                 end if;
         end process;
     end generate g_GENERATE_movey;
