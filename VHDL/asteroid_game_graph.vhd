@@ -190,7 +190,7 @@ begin
             pixel_x => pix_x,
             pixel_y => pix_y,
             enable  => game_over,
-            text_on => gave_over_text_on
+            text_on => game_over_text_on
         );
 
     -- Game start text display
@@ -315,7 +315,7 @@ begin
     end process;
 
     -- Rendering priority: choose which sprite's color outputs for each pixel
-    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on, alien_missile_on, game_start, game_start_text_on)
+    process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, game_over_text_on, game_over, info_section_on, alien_missile_on, game_start, game_start_text_on)
     begin
         if video_on = '1' then
             if game_start = '1' then

@@ -197,7 +197,9 @@ begin
                     else '0';
         end process;
     end generate g_GEN_COLL;
-    
+
+    -- g_GEN_ASTCOLL: for ii in 0 to 3 generate
+        
     asteroid_on_certainly <=
         '1' when asteroid_on(0) = '1' or
                 asteroid_on(1) = '1' or
