@@ -44,6 +44,7 @@ architecture asteroids of asteroid_gen is
     type  asteroid_id_arry_t is array (0 to 3) of asteroid_id;
     signal asteroid_id_arry : asteroid_id_arry_t ;
     -- signal asteroid_mov_arry : asteroid_mov_arry_t;
+    signal rnd10 : std_logic_vector(9 downto 0);
 
     type next_asteroid_y_top_t is array (0 to 3) of unsigned(9 downto 0);
     signal next_asteroid_y_top : next_asteroid_y_top_t := (others => (others => '0'));
@@ -143,6 +144,16 @@ architecture asteroids of asteroid_gen is
         "0000000111111000000000000"
     );
 begin
+    lsfr10_unit : entity work.lsfr10
+        port map(
+            clk => clk,
+            rst => reset,
+            rnd => rnd10
+        );
+
+
+
+
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
@@ -212,14 +223,20 @@ begin
                 end if;
         end process;
     end generate g_GENERATE_movey;
+
+    
         
     process (clk, reset, refresh_screen)
+    variable rnd_val : integer;
     begin
         if reset = '1' then
             asteroid_collision_happened <= (others => '0');
             for i in 0 to 3 loop
-                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE(i) / 2, 10);
-                asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
+                rnd_val := to_integer(unsigned(rnd10));
+                rnd_val := rnd mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
+                asteroid_id_arry(i).asteroid_y_top <= (others => '0');
+                asteroid_collision_happened(i)       <= '0';  
                 --number_of_lives <= "11"; -- 3 lives
             end loop;
         elsif(rising_edge(clk)) then
@@ -229,6 +246,9 @@ begin
                 if refresh_screen = '1' then
                     for i in 0 to 3 loop
                         if asteroid_collision_happened(i) = '1' then
+                            rnd_val := to_integer(unsigned(rnd10));
+                            rnd_val := rnd mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                            asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val);
                             asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                             asteroid_collision_happened(i) <= '0';
                         else
