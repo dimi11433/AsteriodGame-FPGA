@@ -153,10 +153,6 @@ begin
             rst => reset,
             rnd => rnd10
         );
-
-
-
-
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
@@ -259,6 +255,7 @@ begin
                         col_flag(i) := '0'; 
                     else
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
+                        asteroid_id_arry(i).asteroid_x_start <= next_asteroid_x_start(i);
                     end if;
                 end loop;
                 if(asteroid_collision(0) = '1')then
@@ -272,9 +269,7 @@ begin
                 end if; 
                 if(asteroid_collision(3) = '1')then
                     col_flag(3) := '1';
-                end if;
-                    
-                    
+                end if;       
             end if;
         end if;
     end process;
