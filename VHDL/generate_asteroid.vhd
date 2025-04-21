@@ -57,7 +57,6 @@ architecture asteroids of asteroid_gen is
     signal asteroid_in_asteroid : std_logic_vector(3 downto 0);
 
     signal asteroid_collision : std_logic_vector(3 downto 0); 
-    signal asteroid_collision_happened : std_logic_vector(3 downto 0);
     --asteroid image
     type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
@@ -230,21 +229,12 @@ begin
         end process;
     end generate g_GENERATE_movey;
 
-    process(clk, reset)
-    begin
-        if reset = '1' then
-            asteroid_collision_happened <= (others => '0');
-        elsif rising_edge(clk) then
-            for i in 0 to 3 loop
-                asteroid_collision_happened(i) <= asteroid_collision(i);
-            end loop;
-        end if;
-    end process;
    
     process (clk, reset)
     variable rnd_val : integer;
+    variable col_flag : std_logic_vector(3 downto 0)
     begin
-        if reset = '1' then
+        if reset = '1' then        
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
                 rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
@@ -253,14 +243,17 @@ begin
                 --number_of_lives <= "11"; -- 3 lives
             end loop;
         elsif(rising_edge(clk)) then
+            for i in 0 to 3 loop
+                col_flag(i) := asteroid_collision(i);
+            end loop;
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
-                    if asteroid_collision_happened(i) = '1' then
+                    if col_flag(i) = '1' then
                         rnd_val := to_integer(unsigned(rnd10));
                         rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
                         asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
-                        asteroid_collision_happened(i) <= '0';
+                        col_flag(i) := '0';
                     else
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                     end if;
