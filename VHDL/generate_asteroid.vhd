@@ -30,7 +30,7 @@ architecture asteroids of asteroid_gen is
     );
 
 
-    constant ASTEROID_DY : integer := 5;
+    constant ASTEROID_DY : integer := 2;
     constant ASTEROID_DX : integer := 4;
     signal pix_x, pix_y : unsigned(9 downto 0);
     type asteroid_id is record 
@@ -229,13 +229,14 @@ begin
    
     process (clk, reset)
     variable rnd_val : integer;
+    variable base : integer;
     variable col_flag : std_logic_vector(3 downto 0);
     begin
         if reset = '1' then        
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
-                rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
-                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val + (ASTEROID_SIZE(i) * 10) , 10);
+                rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
+                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
                 --number_of_lives <= "11"; -- 3 lives
             end loop;
@@ -247,7 +248,7 @@ begin
                 for i in 0 to 3 loop
                     if col_flag(i) = '1' then
                         rnd_val := to_integer(unsigned(rnd10));
-                        rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
+                        rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                         asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                         col_flag(i) := '0';
