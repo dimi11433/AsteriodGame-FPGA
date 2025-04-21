@@ -62,7 +62,7 @@ architecture asteroid_arch of asteroid_graph is
 
     -- Game start tracking signals
     signal game_start : std_logic;
-    signal game_starting : unsigned(7 downto 0);
+    signal game_starting : unsigned(8 downto 0);
 
     -- Missile launch signal and coordinates
     signal launch_missile : std_logic; 
@@ -253,7 +253,7 @@ begin
 
     alien_1_active <= '1';
 
-    game_start <= '1' when (game_starting > "0000") else
+    game_start <= '1' when (game_starting > 0) else
         '0';
 
     -- Asteroid movement: update vertical position each frame, wrap around at bottom
@@ -318,14 +318,14 @@ begin
     process (video_on, alien_1_on, spaceship_on, asteroid_on, missile_on, asteroids_on, gave_over_text_on, game_over, info_section_on, alien_missile_on, game_start, game_start_text_on)
     begin
         if video_on = '1' then
-            if game_over = '1' then
-                if gave_over_text_on = '1' then
+            if game_start = '1' then
+                if gave_start_text_on = '1' then
                     graph_rgb <= "111"; 
                 else
                     graph_rgb <= "000"; 
                 end if;
-            elsif game_start = '1' then
-                if game_start_text_on = '1' then
+            elsif game_over = '1' then
+                if game_over_text_on = '1' then
                     graph_rgb <= "111"; 
                 else
                     graph_rgb <= "000"; 
