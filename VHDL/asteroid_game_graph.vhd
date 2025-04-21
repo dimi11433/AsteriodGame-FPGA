@@ -52,10 +52,10 @@ architecture asteroid_arch of asteroid_graph is
     signal alien_1_active : std_logic;
 
     -- Collision detection signals for various objects
-    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision, spaceship_collisions : std_logic; 
+    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision: std_logic; 
     signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
     signal spaceship_collision_with_asteroid_happened : std_logic;
-
+    signal spaceship_collisions : std_logic_vector(3 downto 0);
     -- Game over tracking signals
     signal number_of_lives : unsigned(1 downto 0); 
     signal game_over : std_logic;
@@ -274,6 +274,11 @@ begin
             asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
+            for i in 0 to 3 loop
+                if spaceship_collision_with_asteroid = '1' or spaceship_collisions(i) = '1' then
+                    spaceship_collision_with_asteroid_happened <= '1';
+                end if;
+            end loop;
             if refresh_screen = '1' then
                 if spaceship_collision_with_asteroid_happened = '1' then
                     asteroid_y_top <= to_unsigned(0, 10);
@@ -281,11 +286,7 @@ begin
                 else
                     asteroid_y_top <= asteroid_y_top_next;
                 end if;
-            end if;
-
-            if spaceship_collision_with_asteroid = '1'  and spaceship_collisions = '1' then
-                spaceship_collision_with_asteroid_happened <= '1';
-            end if;
+            end if;        
         end if;
     end process;
 
