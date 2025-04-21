@@ -55,7 +55,6 @@ architecture asteroid_arch of asteroid_graph is
     signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision: std_logic; 
     signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
     signal spaceship_collision_with_asteroid_happened : std_logic;
-    signal spaceship_collisions : std_logic_vector(3 downto 0);
     -- Game over tracking signals
     signal number_of_lives : unsigned(1 downto 0); 
     signal game_over : std_logic;
