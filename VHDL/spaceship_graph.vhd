@@ -139,12 +139,12 @@ begin
         -- On clock edge after reset: process screen refresh and collisions
         elsif (rising_edge(clk)) then
             -- On refresh tick: update position or respawn spaceship and update lives
+            for ii in 0 to 3 loop
+                if (collision = '1' or collisions(ii) = '1') then
+                    collision_happened <= '1';
+                end if;
+            end loop;
             if (refresh_screen = '1') then
-                for ii in 0 to 3 loop
-                    if (collision = '1' or collisions(ii) = '1') then
-                        collision_happened <= '1';
-                    end if;
-                end loop;
                 if (collision_happened = '1') then
                     spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
                     spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);

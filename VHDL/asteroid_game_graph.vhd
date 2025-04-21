@@ -283,9 +283,10 @@ begin
                 else
                     asteroid_y_top <= asteroid_y_top_next;
                 end if;
+                
+            end if;
             if spaceship_collision_with_asteroid = '1' then
                 spaceship_collision_with_asteroid_happened <= '1';
-            end if;
             end if;        
         end if;
     end process;
