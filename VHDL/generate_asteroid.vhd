@@ -11,8 +11,7 @@ entity asteroid_gen is
         pixel_x : in std_logic_vector(9 downto 0);
         pixel_y : in std_logic_vector(9 downto 0);
         refresh_screen: in std_logic;
-        asteroid_on_certainly: out std_logic;
-        asteroid_collision_happened: out std_logic_vector(3 downto 0)
+        asteroid_on_certainly: out std_logic
     );
 
 
@@ -58,6 +57,7 @@ architecture asteroids of asteroid_gen is
     signal asteroid_in_asteroid : std_logic_vector(3 downto 0);
 
     signal asteroid_collision : std_logic_vector(3 downto 0); 
+    signal asteroid_collision_happened : std_logic_vector(3 downto 0);
     --asteroid image
     type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
