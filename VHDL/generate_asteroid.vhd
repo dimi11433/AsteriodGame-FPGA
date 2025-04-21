@@ -232,7 +232,7 @@ begin
    
     process (clk, reset)
     variable rnd_val : integer;
-    variable col_flag : std_logic_vector(3 downto 0)
+    variable col_flag : std_logic_vector(3 downto 0);
     begin
         if reset = '1' then        
             for i in 0 to 3 loop
