@@ -95,8 +95,7 @@ begin
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
-            asteroid_on_certainly => asteroids_on,
-            asteroid_collision_happened => spaceship_collisions
+            asteroid_on_certainly => asteroids_on
         );
 
     spaceship_graph_unit : entity work.spaceship_graph
@@ -113,7 +112,6 @@ begin
             btnc => btnc,
             refresh_screen => refresh_screen,
             collision => spaceship_collision,
-            collisions => spaceship_collisions,
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             missile_x => missile_x,
@@ -234,7 +232,7 @@ begin
         '0'; 
 
     -- Collision detection: set flag when two sprite regions overlap
-    spaceship_collision_with_asteroid <= '1' when (spaceship_on = '1' and asteroid_on = '1') else
+    spaceship_collision_with_asteroid <= '1' when (spaceship_on = '1' and (asteroid_on = '1' or asteroids_on = '1')) else
         '0'; 
 
     -- Collision detection: set flag when two sprite regions overlap
