@@ -257,16 +257,16 @@ begin
                     end if;
                 end loop;
                 if(asteroid_collision(0) = '1')then
-                    col_flag(0) <= '1';
+                    col_flag(0) := '1';
                 end if;
                 if(asteroid_collision(1) = '1')then
-                    col_flag(1) <= '1';
+                    col_flag(1) := '1';
                 end if;   
                 if(asteroid_collision(2) = '1')then
-                    col_flag(2) <= '1';
+                    col_flag(2) := '1';
                 end if; 
                 if(asteroid_collision(3) = '1')then
-                    col_flag(3) <= '1';
+                    col_flag(3) := '1';
                 end if;
                     
                     
