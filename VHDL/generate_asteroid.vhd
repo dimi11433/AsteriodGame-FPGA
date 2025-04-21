@@ -240,7 +240,7 @@ begin
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
                 rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
-                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
+                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val + ASTEROID_SIZE(i), 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
                 asteroid_collision_happened(i)       <= '0';  
                 --number_of_lives <= "11"; -- 3 lives
