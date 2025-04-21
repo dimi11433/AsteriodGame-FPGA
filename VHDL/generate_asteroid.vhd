@@ -54,6 +54,7 @@ architecture asteroids of asteroid_gen is
     signal asteroid_colour : std_logic_vector(2 downto 0);
 
     -- signal refresh_screen : std_logic;
+    signal asteroid_in_asteroid : std_logic_vector(3 downto 0);
 
     signal asteroid_collision : std_logic_vector(3 downto 0);
     signal asteroid_collision_happened : std_logic_vector(3 downto 0); 
@@ -199,6 +200,10 @@ begin
     end generate g_GEN_COLL;
 
     -- g_GEN_ASTCOLL: for ii in 0 to 3 generate
+    --     process(asteroid_on(ii))
+    --         begin
+    --             asteroid_in_asteroid(ii) <= '1' when (asteroid_on())
+
         
     asteroid_on_certainly <=
         '1' when asteroid_on(0) = '1' or
@@ -227,14 +232,14 @@ begin
 
     
         
-    process (clk, reset, refresh_screen)
+    process (clk, reset)
     variable rnd_val : integer;
     begin
         if reset = '1' then
             asteroid_collision_happened <= (others => '0');
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
-                rnd_val := rnd_val mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
                 asteroid_collision_happened(i)       <= '0';  
@@ -248,7 +253,7 @@ begin
                     for i in 0 to 3 loop
                         if asteroid_collision_happened(i) = '1' then
                             rnd_val := to_integer(unsigned(rnd10));
-                            rnd_val := rnd_val mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
+                            rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
                             asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val, 10);
                             asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                             asteroid_collision_happened(i) <= '0';
