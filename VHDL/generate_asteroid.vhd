@@ -251,7 +251,7 @@ begin
             end loop;
                 if refresh_screen = '1' then
                     for i in 0 to 3 loop
-                        if asteroid_collision_happened(i) = '1' then
+                        if asteroid_collision(i) = '1' then
                             rnd_val := to_integer(unsigned(rnd10));
                             rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
                             asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val, 10);

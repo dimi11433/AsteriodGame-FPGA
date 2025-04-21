@@ -113,6 +113,7 @@ begin
             btnc => btnc,
             refresh_screen => refresh_screen,
             collision => spaceship_collision,
+            collisions => spaceship_collisions,
             number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             missile_x => missile_x,
@@ -267,6 +268,7 @@ begin
         end if;
     end process;
 
+
     -- Position initialization and update: reset positions and handle asteroid respawn after collision
     process (clk, reset)
     begin
@@ -274,11 +276,6 @@ begin
             asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
-            for i in 0 to 3 loop
-                if spaceship_collision_with_asteroid = '1' or spaceship_collisions(i) = '1' then
-                    spaceship_collision_with_asteroid_happened <= '1';
-                end if;
-            end loop;
             if refresh_screen = '1' then
                 if spaceship_collision_with_asteroid_happened = '1' then
                     asteroid_y_top <= to_unsigned(0, 10);
@@ -286,6 +283,9 @@ begin
                 else
                     asteroid_y_top <= asteroid_y_top_next;
                 end if;
+            if spaceship_collision_with_asteroid = '1' then
+                spaceship_collision_with_asteroid_happened <= '1';
+            end if;
             end if;        
         end if;
     end process;

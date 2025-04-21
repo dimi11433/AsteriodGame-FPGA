@@ -14,6 +14,7 @@ entity spaceship_graph is
         btnc : in std_logic;
         refresh_screen : in std_logic;
         collision : in std_logic;
+        collisions: in std_logic_vector(3 downto 0);
         number_of_lives : inout unsigned(1 downto 0);
         spaceship_on : out std_logic;
         missile_x, missile_y : out unsigned(9 downto 0);
@@ -139,6 +140,11 @@ begin
         elsif (rising_edge(clk)) then
             -- On refresh tick: update position or respawn spaceship and update lives
             if (refresh_screen = '1') then
+                for ii in 0 to 3 loop
+                    if (collision = '1' or collisions(ii) = '1') then
+                        collision_happened <= '1';
+                    end if;
+                end loop;
                 if (collision_happened = '1') then
                     spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
                     spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
@@ -149,12 +155,10 @@ begin
                 end if;
                 if not (number_of_lives = "00") then
                     number_of_lives <= number_of_lives_next;
-                end if;   
+                end if;  
             end if;
             -- Capture collision event to trigger position reset on next refresh
-            if (collision = '1') then
-                collision_happened <= '1';
-            end if;
+            
         end if;
     end process;
 end spaceship_arch;
