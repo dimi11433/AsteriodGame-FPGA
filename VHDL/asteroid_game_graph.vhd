@@ -52,7 +52,7 @@ architecture asteroid_arch of asteroid_graph is
     signal alien_1_active : std_logic;
 
     -- Collision detection signals for various objects
-    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision : std_logic; 
+    signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision, spaceship_collisions : std_logic; 
     signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
     signal spaceship_collision_with_asteroid_happened : std_logic;
 
@@ -95,7 +95,8 @@ begin
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
-            asteroid_on_certainly => asteroids_on
+            asteroid_on_certainly => asteroids_on,
+            asteroid_collision_happened => spaceship_collisions
         );
 
     spaceship_graph_unit : entity work.spaceship_graph
@@ -282,7 +283,7 @@ begin
                 end if;
             end if;
 
-            if spaceship_collision_with_asteroid = '1' then
+            if spaceship_collision_with_asteroid = '1'  and spaceship_collisions = '1' then
                 spaceship_collision_with_asteroid_happened <= '1';
             end if;
         end if;
