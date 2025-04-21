@@ -191,11 +191,8 @@ begin
     end generate g_GENERATE_ROM;
 
     g_GEN_COLL: for idx in 0 to 3 generate
-        process(spaceship_on, asteroid_on(idx))
-            begin
-                asteroid_collision(idx) <= '1' when (spaceship_on = '1' and asteroid_on(idx) = '1')
-                    else '0';
-        end process;
+        asteroid_collision(idx) <= '1' when (spaceship_on = '1' and asteroid_on(idx) = '1')
+            else '0';
     end generate g_GEN_COLL;
 
     -- g_GEN_ASTCOLL: for ii in 0 to 3 generate
@@ -238,7 +235,7 @@ begin
             for i in 0 to 3 loop
                 rnd_val := to_integer(unsigned(rnd10));
                 rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
-                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val + (ASTEROID_SIZE(i) * 2) , 10);
+                asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val + (ASTEROID_SIZE(i) * 10) , 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
                 --number_of_lives <= "11"; -- 3 lives
             end loop;
@@ -251,7 +248,7 @@ begin
                     if col_flag(i) = '1' then
                         rnd_val := to_integer(unsigned(rnd10));
                         rnd_val := (to_integer(unsigned(rnd10)) * (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1))/ 1024;
-                        asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val, 10);
+                        asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                         col_flag(i) := '0';
                     else
