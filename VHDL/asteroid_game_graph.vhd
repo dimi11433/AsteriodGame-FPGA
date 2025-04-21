@@ -162,6 +162,7 @@ begin
             launch_missile => launch_missile,
             alien_on => alien_1_on,
             asteroid_on => asteroid_on,
+            alien_missile_on => alien_missile_on,
             missile_on => missile_on
         );
 
