@@ -144,7 +144,7 @@ architecture asteroids of asteroid_gen is
         "0000000111111000000000000"
     );
 begin
-    lsfr10_unit : entity work.lsfr10
+    lfsr10_unit : entity work.lfsr10
         port map(
             clk => clk,
             rst => reset,
@@ -248,7 +248,7 @@ begin
                         if asteroid_collision_happened(i) = '1' then
                             rnd_val := to_integer(unsigned(rnd10));
                             rnd_val := rnd_val mod (SCREEN_WIDTH - ASTEROID_SIZE(i));
-                            asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val);
+                            asteroid_id_arry(i). asteroid_x_start <= to_unsigned(rnd_val, 10);
                             asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                             asteroid_collision_happened(i) <= '0';
                         else
