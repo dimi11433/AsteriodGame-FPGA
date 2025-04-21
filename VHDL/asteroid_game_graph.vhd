@@ -62,7 +62,7 @@ architecture asteroid_arch of asteroid_graph is
 
     -- Game start tracking signals
     signal game_start : std_logic;
-    signal game_starting : unsigned(3 downto 0);
+    signal game_starting : unsigned(7 downto 0);
 
     -- Missile launch signal and coordinates
     signal launch_missile : std_logic; 
@@ -307,7 +307,7 @@ begin
             game_starting <= (others => '1');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
-                if game_starting > "0000" then
+                if game_starting > 0 then
                     game_starting <= game_starting - 1;
                 end if;
             end if;
