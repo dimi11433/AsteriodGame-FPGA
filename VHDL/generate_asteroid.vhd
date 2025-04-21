@@ -221,12 +221,16 @@ begin
             begin
                 if (asteroid_id_arry(idx).asteroid_y_top < to_unsigned(SCREEN_HEIGHT - ASTEROID_SIZE(idx), 10)) then
                     next_asteroid_y_top(idx) <= asteroid_id_arry(idx).asteroid_y_top + to_unsigned(ASTEROID_DY, 10);
-                else
+                else  
+                    next_asteroid_y_top(idx) <= (others => '0');
+                   
+                end if;
+                if(asteroid_id_arry(idx).asteroid_y_top >= to_unsigned(SCREEN_HEIGHT, 10))then
                     base := to_integer(unsigned(rnd10));
                     rnd_val := (base + idx*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(idx) + 1);
-                    next_asteroid_y_top(idx) <= (others => '0');
                     next_asteroid_x_start(idx) <= to_unsigned(rnd_val, 10);
                 end if;
+
         end process;
     end generate g_GENERATE_movey;
 
