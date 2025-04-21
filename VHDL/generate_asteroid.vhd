@@ -247,11 +247,14 @@ begin
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
                     if col_flag(i) = '1' then
-                        rnd_val := to_integer(unsigned(rnd10));
+                        base := to_integer(unsigned(rnd10));
                         rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                         asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');  
                     else
+                        base := to_integer(unsigned(rnd10));
+                        rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
+                        asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                     end if;
                 end loop;
