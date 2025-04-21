@@ -41,7 +41,7 @@ architecture asteroid_arch of asteroid_graph is
 
     -- On signal for each object to determine if it should be rendered
     signal asteroid_on, alien_1_on, spaceship_on : std_logic;
-    signal info_section_on, missile_on, asteroids_on, gave_over_text_on, game_start_text_on, alien_missile_on : std_logic;
+    signal info_section_on, missile_on, asteroids_on, game_over_text_on, game_start_text_on, alien_missile_on : std_logic;
 
     -- Color signals for each object 
     signal alien_color, spaceship_color, asteroid_color, info_section_color, missile_color, multiasteroid_color : std_logic_vector(2 downto 0); 
@@ -319,7 +319,7 @@ begin
     begin
         if video_on = '1' then
             if game_start = '1' then
-                if gave_start_text_on = '1' then
+                if game_start_text_on = '1' then
                     graph_rgb <= "111"; 
                 else
                     graph_rgb <= "000"; 
