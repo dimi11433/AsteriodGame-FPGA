@@ -12,7 +12,7 @@ entity asteroid_gen is
         pixel_y : in std_logic_vector(9 downto 0);
         refresh_screen: in std_logic;
         asteroid_on_certainly: out std_logic;
-        asteroid_collision_happened: out std_logic_vector(3 down to 0);
+        asteroid_collision_happened: out std_logic_vector(3 downto 0);
     );
 
 
@@ -240,10 +240,7 @@ begin
             end loop;
         end if;
     end process;
-
-
-    
-        
+   
     process (clk, reset)
     variable rnd_val : integer;
     begin
