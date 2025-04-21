@@ -195,7 +195,7 @@ begin
         );
 
     -- Game start text display
-    game_start_display : entity work.display_text
+    game_start_display : entity work.game_start_graph
         port map(
             clk     => clk,
             reset   => reset,
@@ -305,7 +305,7 @@ begin
     process (clk, reset)
     begin
         if reset = '1' then
-            game_starting <= (others => '1');
+            game_starting <= "100000100";
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 if game_starting > 0 then
