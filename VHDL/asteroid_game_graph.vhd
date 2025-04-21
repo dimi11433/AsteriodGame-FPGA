@@ -95,7 +95,8 @@ begin
             spaceship_on => spaceship_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
-            asteroid_on_certainly => asteroids_on
+            asteroid_on_certainly => asteroids_on,
+            asteroid_collision_happened => spaceship_collisions
         );
 
     spaceship_graph_unit : entity work.spaceship_graph
@@ -249,7 +250,7 @@ begin
 
     spaceship_collision <= (spaceship_collision_with_asteroid or
         spaceship_collision_with_alien or
-        missile_collision_with_spaceship);
+        missile_collision_with_spaceship or spaceship_collisions);
 
     alien_1_active <= '1';
 
