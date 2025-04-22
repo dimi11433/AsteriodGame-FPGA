@@ -54,12 +54,12 @@ architecture asteroids of asteroid_gen is
     -- signal next_asteroid_y_top : array (0 to 3) of unsigned(9 downto 0);
     signal asteroid_on : std_logic_vector(3 downto 0);
 
-    signal asteroid_colour : std_logic_vector(2 downto 0);
-
     -- signal refresh_screen : std_logic;
     signal asteroid_in_asteroid : std_logic_vector(3 downto 0);
 
     signal asteroid_collision : std_logic_vector(3 downto 0); 
+
+    signal collision_happened : std_logic_vector(3 downto 0);
     --asteroid image
     type rom_type_10 is array(0 to 9) of std_logic_vector(0 to 9);
     constant ASTEROID_ROM_1 : rom_type_10 := (
@@ -225,8 +225,7 @@ begin
                     next_asteroid_y_top(idx) <= (others => '0');
                     base := to_integer(unsigned(rnd10));
                     rnd_val := (base + idx*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(idx) + 1);
-                    next_asteroid_x_start(idx) <= to_unsigned(rnd_val, 10);
-                   
+                    next_asteroid_x_start(idx) <= to_unsigned(rnd_val, 10);  
                 end if;
         end process;
     end generate g_GENERATE_movey;
@@ -243,34 +242,25 @@ begin
                 rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
-                --number_of_lives <= "11"; -- 3 lives
             end loop;
         elsif(rising_edge(clk)) then
+            for i in 0 to 3 loop
+                if asteroid_collision(i) = '1' then
+                    collision_happened(i) <= '1';
+                end if;
+            end loop;
             if refresh_screen = '1' then
                 for i in 0 to 3 loop
-                    if asteroid_collision(i) = '1' then
+                    if (collision_happened(i) = '1') then
                         base := to_integer(unsigned(rnd10));
                         rnd_val := (base + i*123) mod (SCREEN_WIDTH - ASTEROID_SIZE(i) + 1);
                         asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                         asteroid_id_arry(i).asteroid_y_top <= (others => '0');
-                        -- col_flag(i) := '0'; 
                     else
                         asteroid_id_arry(i).asteroid_y_top <= next_asteroid_y_top(i);
                         asteroid_id_arry(i).asteroid_x_start <= next_asteroid_x_start(i);
                     end if;
                 end loop;
-                -- if(asteroid_collision(0) = '1')then
-                --     col_flag(0) := '1';
-                -- end if;
-                -- if(asteroid_collision(1) = '1')then
-                --     col_flag(1) := '1';
-                -- end if;   
-                -- if(asteroid_collision(2) = '1')then
-                --     col_flag(2) := '1';
-                -- end if; 
-                -- if(asteroid_collision(3) = '1')then
-                --     col_flag(3) := '1';
-                -- end if;       
             end if;
         end if;
     end process;
