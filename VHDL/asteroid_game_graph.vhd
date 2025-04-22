@@ -6,7 +6,7 @@ use ieee.numeric_std.all;
 
 entity asteroid_graph is
     port (
-        clk, reset : in std_logic;
+        clk, rst : in std_logic;
         pixel_tick : in std_logic; 
         video_on : in std_logic; 
         pixel_x : in std_logic_vector(9 downto 0); 
@@ -25,6 +25,8 @@ architecture asteroid_arch of asteroid_graph is
     constant SCREEN_HEIGHT : integer := 480; 
     constant ASTEROID_SIZE : integer := 8; 
     constant ASTEROID_DY : integer := 1; 
+
+    signal reset : std_logic;
 
     -- Signal declarations
     -- VGA current pixel coordinates
@@ -204,6 +206,9 @@ begin
             text_on => game_start_text_on
         );
 
+    reset <= '1' when (rst = '1' or game_start = '1' or game_over = '1') else
+        '0';
+
     -- Convert pixel_x and pixel_y to unsigned for arithmetic operations
     pix_x <= unsigned(pixel_x); 
     pix_y <= unsigned(pixel_y); 
@@ -268,9 +273,9 @@ begin
 
 
     -- Position initialization and update: reset positions and handle asteroid respawn after collision
-    process (clk, reset)
+    process (clk, rst)
     begin
-        if reset = '1' then
+        if rst = '1' then
             asteroid_x_start <= to_unsigned(SCREEN_WIDTH / 2 - ASTEROID_SIZE / 2, 10);
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
@@ -290,9 +295,9 @@ begin
     end process;
 
     -- Game over logic: assert when player lives reach zero
-    process (clk, reset)
+    process (clk, rst)
     begin
-        if reset = '1' then
+        if rst = '1' then
             game_over <= '0';
         elsif rising_edge(clk) then
             if number_of_lives = "00" then
@@ -302,9 +307,9 @@ begin
     end process;
 
     -- Game start logic: assert when game is starting
-    process (clk, reset)
+    process (clk, rst)
     begin
-        if reset = '1' then
+        if rst = '1' then
             game_starting <= "100000100";
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
