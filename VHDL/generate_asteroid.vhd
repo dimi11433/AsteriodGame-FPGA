@@ -156,7 +156,6 @@ begin
     pix_x <= unsigned(pixel_x);
     pix_y <= unsigned(pixel_y);
 
-    asteroid_colour <= "111"; -- white/greyish 
     --Is the bit we are at the same bit in any of the asteroids.
 
     g_GENERATE_ROM: for ii in 0 to 3 generate
