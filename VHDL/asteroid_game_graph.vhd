@@ -56,7 +56,8 @@ architecture asteroid_arch of asteroid_graph is
     -- Collision detection signals for various objects
     signal spaceship_collision_with_asteroid, spaceship_collision_with_alien, spaceship_collision: std_logic; 
     signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
-    signal spaceship_collision_with_asteroid_happened : std_logic;
+    signal collision_with_asteroid_happened : std_logic;
+    signal asteroid_collision_with_missile : std_logic;
     -- Game over tracking signals
     signal number_of_lives : unsigned(1 downto 0); 
     signal game_over : std_logic;
@@ -254,6 +255,9 @@ begin
     missile_collision_with_spaceship <= '1' when (alien_missile_on = '1' and spaceship_on = '1') else
         '0';
 
+    asteroid_collision_with_missile <= '1' when (missile_on = '1' and asteroid_on = '1') else
+        '0';
+
     spaceship_collision <= (spaceship_collision_with_asteroid or
         spaceship_collision_with_alien or
         missile_collision_with_spaceship);
@@ -282,16 +286,16 @@ begin
             asteroid_y_top <= (others => '0');
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
-                if spaceship_collision_with_asteroid_happened = '1' then
+                if collision_with_asteroid_happened = '1' then
                     asteroid_y_top <= to_unsigned(0, 10);
-                    spaceship_collision_with_asteroid_happened <= '0';
+                    collision_with_asteroid_happened <= '0';
                 else
                     asteroid_y_top <= asteroid_y_top_next;
                 end if;
                 
             end if;
-            if spaceship_collision_with_asteroid = '1' then
-                spaceship_collision_with_asteroid_happened <= '1';
+            if spaceship_collision_with_asteroid = '1' or asteroid_collision_with_missile = '1'  then
+                collision_with_asteroid_happened <= '1';
             end if;        
         end if;
     end process;
