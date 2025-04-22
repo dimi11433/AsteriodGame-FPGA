@@ -102,17 +102,17 @@ begin
         spaceship_y_top_next <= spaceship_y_top;
         -- Horizontal movement: move left if left button pressed and not at screen edge
         if (btnl = '1') and (spaceship_x_start > 0) then
-            spaceship_x_start_next <= spaceship_x_start - to_unsigned(SPACESHIP_DX);
+            spaceship_x_start_next <= spaceship_x_start - to_unsigned(SPACESHIP_DX, 10);
         -- Horizontal movement: move right if right button pressed and not at screen edge
         elsif (btnr = '1') and (spaceship_x_end < SCREEN_WIDTH - 1) then
-            spaceship_x_start_next <= spaceship_x_start + to_unsigned(SPACESHIP_DX);
+            spaceship_x_start_next <= spaceship_x_start + to_unsigned(SPACESHIP_DX, 10);
         end if;
         -- Vertical movement: move up if up button pressed and not at top edge
         if (btnu = '1') and (spaceship_y_top > 0) then
-            spaceship_y_top_next <= spaceship_y_top - to_unsigned(SPACESHIP_DY);
+            spaceship_y_top_next <= spaceship_y_top - to_unsigned(SPACESHIP_DY, 10);
         -- Vertical movement: move down if down button pressed and not at bottom edge
         elsif (btnd = '1') and (spaceship_y_bottom < SCREEN_HEIGHT - 1) then
-            spaceship_y_top_next <= spaceship_y_top + to_unsigned(SPACESHIP_DY);
+            spaceship_y_top_next <= spaceship_y_top + to_unsigned(SPACESHIP_DY, 10);
         end if;
     end process;
 
