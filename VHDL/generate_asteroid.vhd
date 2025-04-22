@@ -242,6 +242,7 @@ begin
                 asteroid_id_arry(i).asteroid_x_start <= to_unsigned(rnd_val, 10);
                 asteroid_id_arry(i).asteroid_y_top <= (others => '0');
             end loop;
+            collision_happened <= (others => '0');
         elsif(rising_edge(clk)) then
             for i in 0 to 3 loop
                 if asteroid_collision(i) = '1' then
