@@ -8,6 +8,8 @@ This project implements a fully playable ASTEROIDS game in VHDL, designed to run
 - An on-screen info section displaying the player’s remaining lives.
 - A “Game Over” screen when all lives are lost.
 
+## Video Demo
+
 ## Project Structure
 - `asteroids_top.vhd`  
   Top-level module that instantiates all graphics and game logic components.
