@@ -28,6 +28,9 @@ architecture spaceship_arch of spaceship_graph is
     constant SPACESHIP_X_SIZE : integer := 16;
     constant SPACESHIP_Y_SIZE : integer := 24;
 
+    constant SPACESHIP_DX : integer := 1;
+    constant SPACESHIP_DY : integer := 1;
+
     constant MAX_NUMBER_OF_MISSILES : integer := 200;
 
     signal spaceship_rom_bit : std_logic;
@@ -99,17 +102,17 @@ begin
         spaceship_y_top_next <= spaceship_y_top;
         -- Horizontal movement: move left if left button pressed and not at screen edge
         if (btnl = '1') and (spaceship_x_start > 0) then
-            spaceship_x_start_next <= spaceship_x_start - 1;
+            spaceship_x_start_next <= spaceship_x_start - to_unsigned(SPACESHIP_DX);
         -- Horizontal movement: move right if right button pressed and not at screen edge
         elsif (btnr = '1') and (spaceship_x_end < SCREEN_WIDTH - 1) then
-            spaceship_x_start_next <= spaceship_x_start + 1;
+            spaceship_x_start_next <= spaceship_x_start + to_unsigned(SPACESHIP_DX);
         end if;
         -- Vertical movement: move up if up button pressed and not at top edge
         if (btnu = '1') and (spaceship_y_top > 0) then
-            spaceship_y_top_next <= spaceship_y_top - 1;
+            spaceship_y_top_next <= spaceship_y_top - to_unsigned(SPACESHIP_DY);
         -- Vertical movement: move down if down button pressed and not at bottom edge
         elsif (btnd = '1') and (spaceship_y_bottom < SCREEN_HEIGHT - 1) then
-            spaceship_y_top_next <= spaceship_y_top + 1;
+            spaceship_y_top_next <= spaceship_y_top + to_unsigned(SPACESHIP_DY);
         end if;
     end process;
 
