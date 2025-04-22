@@ -219,7 +219,7 @@ begin
             variable rnd_val : integer;
             variable base : integer;
             begin
-                if (asteroid_id_arry(idx).asteroid_y_top < to_unsigned(SCREEN_HEIGHT + ASTEROID_SIZE(i), 10)) then
+                if (asteroid_id_arry(idx).asteroid_y_top < to_unsigned(SCREEN_HEIGHT + ASTEROID_SIZE(idx), 10)) then
                     next_asteroid_y_top(idx) <= asteroid_id_arry(idx).asteroid_y_top + to_unsigned(ASTEROID_DY, 10);
                 else  
                     next_asteroid_y_top(idx) <= (others => '0');
