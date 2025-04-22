@@ -7,6 +7,7 @@ use ieee.numeric_std.all;
 entity asteroid_graph is
     port (
         clk, rst : in std_logic;
+        pause : in std_logic;
         pixel_tick : in std_logic; 
         video_on : in std_logic; 
         pixel_x : in std_logic_vector(9 downto 0); 
@@ -236,7 +237,7 @@ begin
 
     -- Generate a pulse at the last pixel of each frame to trigger object updates
     refresh_screen <= '1' when (pix_x = to_unsigned(SCREEN_WIDTH - 1, 10) and
-        pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1') else
+        pix_y = to_unsigned(SCREEN_HEIGHT - 1, 10) and pixel_tick = '1' and pause = '0') else
         '0'; 
 
     -- Collision detection: set flag when two sprite regions overlap

@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 entity asteroids_top is
     port (
         clk, reset : in std_logic; -- System clock and synchronous reset
+        pause : in std_logic; -- Pause control
         btnl, btnr : in std_logic; -- Left/right movement controls for the spaceship
         btnu, btnd : in std_logic; -- Up/down movement controls for the spaceship
         btnc : in std_logic; -- Controls shooting missiles
@@ -35,6 +36,7 @@ begin
         port map(
             clk => clk,
             rst => reset,
+            pause => pause,
             pixel_tick => pixel_tick,
             video_on => video_on,
             pixel_x => pixel_x,
