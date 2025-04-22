@@ -165,6 +165,7 @@ begin
             alien_on => alien_1_on,
             asteroid_on => asteroid_on,
             alien_missile_on => alien_missile_on,
+            asteroids_on => asteroids_on,
             missile_on => missile_on
         );
 
