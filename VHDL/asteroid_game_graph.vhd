@@ -94,6 +94,7 @@ begin
             video_on  => video_on,
             refresh_screen => refresh_screen,
             spaceship_on => spaceship_on,
+            spaceship_missile_on => missile_on,
             pixel_x  => pixel_x,
             pixel_y  => pixel_y,
             asteroid_on_certainly => asteroids_on

@@ -8,6 +8,7 @@ entity asteroid_gen is
         pixel_tick : in std_logic;
         video_on : in std_logic;
         spaceship_on: in std_logic;
+        spaceship_missile_on: in std_logic;
         pixel_x : in std_logic_vector(9 downto 0);
         pixel_y : in std_logic_vector(9 downto 0);
         refresh_screen: in std_logic;
@@ -189,7 +190,7 @@ begin
     end generate g_GENERATE_ROM;
 
     g_GEN_COLL: for idx in 0 to 3 generate
-        asteroid_collision(idx) <= '1' when (spaceship_on = '1' and asteroid_on(idx) = '1')
+        asteroid_collision(idx) <= '1' when ((spaceship_on = '1' or spaceship_missile_on = '1') and asteroid_on(idx) = '1')
             else '0';
     end generate g_GEN_COLL;
 
