@@ -2,8 +2,8 @@ from PIL import Image
 
 def main():
     # parameters
-    image = input("Enter the path to the image: ")
-    SIZE        = (32, 32)      # width, height
+    image = "vader.png"  # path to the image
+    SIZE        = (64, 64)      # width, height
     THRESHOLD   = 150           # 0–255: below → 1, above → 0
 
     img = Image.open(image).convert("L").resize(SIZE, Image.BICUBIC)
