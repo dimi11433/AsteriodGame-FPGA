@@ -18,7 +18,7 @@ architecture rtl of game_start_graph is
     -- One signal per line
     signal line1_on, line2_on, line3_on, line4_on, line5_on, line6_on : std_logic;
 
-    type vader_bitmap_t is array(31 to 0) of std_logic_vector(31 downto 0);
+    type vader_bitmap_t is array(0 to 31) of std_logic_vector(0 to 31);
     constant DARK_VADER_BITMAP : vader_bitmap_t := (
         "00000000000000000000000000000000",
         "00000000000000000000000000000000",
