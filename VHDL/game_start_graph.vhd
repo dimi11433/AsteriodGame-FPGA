@@ -62,8 +62,6 @@ architecture rtl of game_start_graph is
 
     signal vader_on, vader_rom_bit : std_logic;
 begin
-    VADER_Y_BOTTOM <= VADER_Y_TOP + VADER_SIZE - 1;
-    VADER_X_END <= VADER_X_START + VADER_SIZE - 1;
     vader_rom_bit <= DARK_VADER_BITMAP(to_integer(pixel_y - VADER_Y_TOP))(to_integer(pixel_x - VADER_X_START));
     vader_on <= '1' when (pixel_x >= VADER_X_START and pixel_x <= VADER_X_END) and (pixel_y >= VADER_Y_TOP and pixel_y <= VADER_Y_BOTTOM) and vader_rom_bit = '1' else
         '0';
