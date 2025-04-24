@@ -285,7 +285,7 @@ begin
     process (clk, rst)
     begin
         if rst = '1' then
-            number_of_lives <= "111"; -- 7 lives
+            number_of_lives <= "011"; -- 3 lives
             alien_kills <= "00";
             alien_was_killed <= '0';
             spaceship_collision_happened <= '0';
