@@ -14,7 +14,6 @@ entity spaceship_graph is
         btnc : in std_logic;
         refresh_screen : in std_logic;
         collision : in std_logic;
-        number_of_lives : inout unsigned(1 downto 0);
         spaceship_on : out std_logic;
         missile_x, missile_y : out unsigned(9 downto 0);
         launch_missile : out std_logic
@@ -41,8 +40,6 @@ architecture spaceship_arch of spaceship_graph is
     signal spaceship_x_start_next, spaceship_y_top_next : unsigned(9 downto 0);
 
     signal collision_happened : std_logic;
-
-    signal number_of_lives_next : unsigned(1 downto 0);
 
     -- spaceship image
     type rom_type_16 is array(0 to 23) of std_logic_vector(0 to 15);
@@ -91,10 +88,6 @@ begin
     -- Compute missile spawn Y coordinate relative to spaceship position
     missile_y <= spaceship_y_top + to_unsigned(4, 10);
 
-    -- Calculate next lives count: decrement when a collision has occurred
-    number_of_lives_next <= number_of_lives - 1 when (collision_happened = '1') else
-        number_of_lives;
-
     -- Compute next spaceship position based on button inputs within screen boundaries
     process (btnl, btnr, btnu, btnd, spaceship_x_start, spaceship_y_top, spaceship_x_end, spaceship_y_bottom)
     begin
@@ -137,7 +130,6 @@ begin
             spaceship_x_start <= to_unsigned(SCREEN_WIDTH / 2 - SPACESHIP_X_SIZE / 2, 10);
             spaceship_y_top <= to_unsigned(SCREEN_HEIGHT - 10 - SPACESHIP_Y_SIZE, 10);
             collision_happened <= '0';
-            number_of_lives <= to_unsigned(3, 2);
         -- On clock edge after reset: process screen refresh and collisions
         elsif (rising_edge(clk)) then
             -- On refresh tick: update position or respawn spaceship and update lives
@@ -149,10 +141,7 @@ begin
                 else
                     spaceship_x_start <= spaceship_x_start_next;
                     spaceship_y_top <= spaceship_y_top_next;
-                end if;
-                if not (number_of_lives = "00") then
-                    number_of_lives <= number_of_lives_next;
-                end if;  
+                end if; 
             end if;
             -- Capture collision event to trigger position reset on next refresh
             if (collision = '1') then

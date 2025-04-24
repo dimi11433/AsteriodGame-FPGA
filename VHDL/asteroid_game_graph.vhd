@@ -59,9 +59,12 @@ architecture asteroid_arch of asteroid_graph is
     signal missile_collision_with_alien, missile_collision_with_spaceship : std_logic; 
     signal collision_with_asteroid_happened : std_logic;
     signal asteroid_collision_with_missile : std_logic;
+
+    signal spaceship_collision_happened : std_logic;
     -- Game over tracking signals
     signal number_of_lives : unsigned(1 downto 0); 
     signal game_over : std_logic;
+    signal alien_kills : unsigned(1 downto 0);
 
     -- Game start tracking signals
     signal game_start : std_logic;
@@ -116,7 +119,6 @@ begin
             btnc => btnc,
             refresh_screen => refresh_screen,
             collision => spaceship_collision,
-            number_of_lives => number_of_lives,
             spaceship_on => spaceship_on,
             missile_x => missile_x,
             missile_y => missile_y,
@@ -278,6 +280,34 @@ begin
         end if;
     end process;
 
+    -- on 3 alien kills, give a life
+    process (clk, rst)
+    begin
+        if rst = '1' then
+            number_of_lives <= "00";
+            alien_kills <= "00";
+            spaceship_collision_happened <= '0';
+        elsif rising_edge(clk) then
+            if refresh_screen = '1' then
+                if alien_kills = "11" then
+                    number_of_lives <= number_of_lives + 1;
+                    alien_kills <= "00";
+                end if;
+                if spaceship_collision_happened = '1' then
+                    if number_of_lives > 0 then
+                        number_of_lives <= number_of_lives - 1;
+                    else
+                        number_of_lives <= "00";
+                    end if;
+                    spaceship_collision_happened <= '0';
+                end if;
+            end if;
+            if spaceship_collision = '1' then
+                spaceship_collision_happened <= '1';
+            end if;
+        end if;
+    end process;
+
 
     -- Position initialization and update: reset positions and handle asteroid respawn after collision
     process (clk, rst)
@@ -319,9 +349,11 @@ begin
         if rst = '1' then
             game_starting <= "100000100";
         elsif rising_edge(clk) then
-            if refresh_screen = '1' then
-                if game_starting > 0 then
-                    game_starting <= game_starting - 1;
+            if pause = '0' then
+                if refresh_screen = '1' then
+                    if game_starting > 0 then
+                        game_starting <= game_starting - 1;
+                    end if;
                 end if;
             end if;
         end if;
