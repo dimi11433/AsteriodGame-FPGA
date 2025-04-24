@@ -284,7 +284,7 @@ begin
     process (clk, rst)
     begin
         if rst = '1' then
-            number_of_lives <= "00";
+            number_of_lives <= "11";
             alien_kills <= "00";
             spaceship_collision_happened <= '0';
         elsif rising_edge(clk) then
