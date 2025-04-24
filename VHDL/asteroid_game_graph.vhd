@@ -63,7 +63,7 @@ architecture asteroid_arch of asteroid_graph is
 
     signal spaceship_collision_happened : std_logic;
     -- Game over tracking signals
-    signal number_of_lives : unsigned(1 downto 0); 
+    signal number_of_lives : unsigned(2 downto 0); 
     signal game_over : std_logic;
     signal alien_kills : unsigned(1 downto 0);
 
@@ -285,14 +285,16 @@ begin
     process (clk, rst)
     begin
         if rst = '1' then
-            number_of_lives <= "11";
+            number_of_lives <= "111"; -- 7 lives
             alien_kills <= "00";
             alien_was_killed <= '0';
             spaceship_collision_happened <= '0';
         elsif rising_edge(clk) then
             if refresh_screen = '1' then
                 if alien_kills = "11" then
-                    number_of_lives <= number_of_lives + 1;
+                    if number_of_lives < "111" then
+                        number_of_lives <= number_of_lives + 1;
+                    end if;
                     alien_kills <= "00";
                 end if;
                 if alien_was_killed = '1' then
@@ -303,7 +305,7 @@ begin
                     if number_of_lives > 0 then
                         number_of_lives <= number_of_lives - 1;
                     else
-                        number_of_lives <= "00";
+                        number_of_lives <= "000"; -- Game over
                     end if;
                     spaceship_collision_happened <= '0';
                 end if;
