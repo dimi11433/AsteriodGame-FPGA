@@ -10,7 +10,7 @@ entity info_section_graph is
         pixel_y : in unsigned(9 downto 0);
         refresh_screen : in std_logic;
         collision : in std_logic;
-        number_of_lives : in unsigned(1 downto 0);
+        number_of_lives : in unsigned(2 downto 0);
         info_section_on : out std_logic
     );
 end info_section_graph;
